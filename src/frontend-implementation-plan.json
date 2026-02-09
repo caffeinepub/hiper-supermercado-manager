@@ -1,0 +1,158 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Mobile optimization: responsive UI, touch-friendly HUD, and responsive canvas scaling",
+  "requirements": [
+    {
+      "id": "REQ-40",
+      "summary": "Make Title Screen, Profile Setup, Store Initializer, and in-game HUD layouts responsive (>=320px), safe-area aware, and free of clipping/overlap.",
+      "acceptanceCriteria": [
+        "On iPhone SE / 360x640 emulation, TitleScreen content fits without horizontal scrolling and without overlapping the Start/Login/About controls.",
+        "On small screens, dialogs/sheets used during profile setup and store initialization fit within the viewport and remain scrollable if content exceeds height.",
+        "In GameScene, HUD controls do not overlap each other or render off-screen at common mobile breakpoints (e.g., 360x640, 390x844)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/TitleScreen.tsx",
+          "operation": "modify",
+          "description": "Adjust layout to use mobile-friendly viewport sizing (dvh), safe-area padding, and responsive spacing so the logo + actions fit at 320px width without overlap or horizontal scroll; ensure primary actions remain reachable one-handed."
+        },
+        {
+          "path": "frontend/src/components/ProfileSetupDialog.tsx",
+          "operation": "modify",
+          "description": "Make the profile setup dialog content height-constrained on small screens (fit within viewport) and internally scrollable when needed; keep all user-facing text in English. Use the existing shadcn-ui Dialog component styling hooks. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/StoreInitializer.tsx",
+          "operation": "modify",
+          "description": "Ensure the initializer screen/card scales for small screens (dvh height handling, responsive padding/typography, no clipping) and remains readable without introducing horizontal scroll."
+        },
+        {
+          "path": "frontend/src/game/GameHUD.tsx",
+          "operation": "modify",
+          "description": "Update HUD layout breakpoints and positioning to avoid overlap/clipping on small screens (top stats/controls and bottom action row), including safe-area offsets where needed."
+        },
+        {
+          "path": "frontend/src/game/GameScene.tsx",
+          "operation": "modify",
+          "description": "Adjust the game scene container styling to be mobile-viewport correct (dvh, safe-area), prevent unintended page scrollbars, and ensure HUD + canvas stay within the visible area."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add global mobile resilience styles: prefer dynamic viewport units, prevent accidental horizontal overflow, and add safe-area helpers (e.g., CSS variables/classes) used by TitleScreen/GameScene/HUD; do not change immutable files."
+        }
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "summary": "Make in-game HUD touch-friendly on mobile: minimum tap targets, reduced crowding, and a mobile-friendly bottom action row layout with English labels.",
+      "acceptanceCriteria": [
+        "All interactive HUD controls have a minimum ~44px tap target (or equivalent Tailwind sizing) on small screens.",
+        "The bottom HUD actions (Sectors, Logistics, Finance, Settings) remain usable on mobile without overlapping and without requiring horizontal scrolling.",
+        "The top HUD (Funds, Reputation, Day, Pause/Play, Speed) remains readable and usable on mobile without covering critical screen area excessively."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/GameHUD.tsx",
+          "operation": "modify",
+          "description": "Increase mobile tap targets (e.g., min height/width ~44px), improve spacing, and convert the bottom action row into a responsive layout (wrap/grid and/or compact label treatment) that remains fully usable without horizontal scrolling; keep all labels in English. Use existing shadcn-ui Button/Sheet components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add/adjust any global utility classes (via Tailwind @layer if needed) to support consistent minimum tap target sizing and safe-area padding for HUD controls."
+        }
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "summary": "Make the 2D game canvas responsive: size to its container/viewport, clamp devicePixelRatio for crispness, and avoid introducing horizontal scrolling.",
+      "acceptanceCriteria": [
+        "GameCanvas scales to fill the available game area on different screen sizes and orientations (portrait/landscape) without distortion or clipping.",
+        "Canvas rendering accounts for devicePixelRatio with a reasonable clamp (e.g., <=2) so text/lines are not blurry on retina devices while avoiding excessive resolution on mobile.",
+        "No horizontal page scrolling is introduced by the canvas on mobile."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
+          "operation": "modify",
+          "description": "Replace fixed 800x600 sizing with container-driven sizing (e.g., ResizeObserver), set canvas CSS size to fill available space, and set internal bitmap size using clamped devicePixelRatio for crisp rendering without excessive resolution on mobile."
+        },
+        {
+          "path": "frontend/src/game/GameScene.tsx",
+          "operation": "modify",
+          "description": "Introduce/adjust a dedicated canvas container region that defines the available game area for responsive sizing (while keeping HUD overlay), ensuring no horizontal overflow on mobile."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add any required global rules to prevent canvas-induced overflow (e.g., ensure canvas is block-level, max-width rules, and overflow-x hidden where appropriate without breaking scrollable panels)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "summary": "Improve mobile input handling for predictable touch interactions: prevent unintended page scroll/gesture on the canvas while keeping intended UI surfaces scrollable.",
+      "acceptanceCriteria": [
+        "Touch interactions on the game canvas do not cause the page to scroll or bounce the viewport unexpectedly.",
+        "Scrollable UI surfaces (e.g., the Sectors sheet content) continue to scroll normally on mobile.",
+        "No new browser console errors are introduced during touch interactions."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
+          "operation": "modify",
+          "description": "Apply canvas-specific touch handling (e.g., touch-action configuration and non-passive listeners where needed) to prevent page scrolling/overscroll while interacting with the canvas, without affecting scrollable UI panels/sheets."
+        },
+        {
+          "path": "frontend/src/game/GameScene.tsx",
+          "operation": "modify",
+          "description": "Ensure the game view container does not unintentionally swallow scrolling for overlays/sheets (canvas should block scroll only during direct canvas interaction; sheets/panels should remain scrollable)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "summary": "Optimize canvas rendering for mobile by removing unconditional interval redraws and using a requestAnimationFrame-driven and/or simulation-driven redraw strategy.",
+      "acceptanceCriteria": [
+        "GameCanvas no longer relies on an unconditional setInterval redraw if an animation frame approach or a simulation-driven redraw can reduce redundant work.",
+        "CPU usage is visibly reduced in devtools performance profiling on mobile emulation compared to a constant 10 FPS interval redraw, without breaking the displayed state updates.",
+        "Rendering continues to update smoothly during simulation changes (e.g., customer movement)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
+          "operation": "modify",
+          "description": "Remove the unconditional setInterval redraw; implement a requestAnimationFrame-based render scheduling strategy that renders on state changes and/or coalesces rapid updates to avoid redundant work while preserving current visuals."
+        },
+        {
+          "path": "frontend/src/game/sim/useGameSimulation.ts",
+          "operation": "modify",
+          "description": "If needed to support render coalescing, expose minimal simulation timing signals (e.g., tick counter already present) or stabilize state update cadence to work well with requestAnimationFrame rendering, without changing gameplay systems."
+        }
+      ]
+    },
+    {
+      "id": "REQ-45",
+      "summary": "Make the Sectors panel mobile-friendly: readable on small screens, responsive typography/wrapping, and horizontal scrolling limited to the table region when necessary (without harming desktop).",
+      "acceptanceCriteria": [
+        "On small screens, the SectorsPanel content does not overflow the viewport; long rows/columns remain accessible (e.g., via horizontal scrolling inside the table container).",
+        "Text remains legible on mobile and key sector stats are still visible without excessive truncation.",
+        "Desktop layout (>=1024px) is not degraded."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/features/sectors/SectorsPanel.tsx",
+          "operation": "modify",
+          "description": "Adjust panel layout for mobile: responsive heading typography, stats grid that stacks appropriately, and wrap the table in a dedicated horizontal-scroll container (only when needed) while keeping desktop layout intact. Use existing shadcn-ui Table/Card components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/game/GameHUD.tsx",
+          "operation": "modify",
+          "description": "Ensure the SheetContent that hosts SectorsPanel remains viewport-fit and scrollable on mobile (avoid nested overflow traps), keeping the panel usable one-handed. Use the existing shadcn-ui Sheet component. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

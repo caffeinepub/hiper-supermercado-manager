@@ -1,0 +1,40 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-09T07:08:43.388Z",
+  "summary": "The diff implements responsive layout updates for TitleScreen, ProfileSetupDialog, StoreInitializer, GameScene container sizing, a mobile-optimized HUD layout with larger tap targets, and a responsive GameCanvas with ResizeObserver sizing, clamped DPR, and a requestAnimationFrame render loop throttled for mobile performance. However, explicit mobile touch/gesture handling on the canvas to prevent page scrolling while interacting is not evidenced in the shown changes.",
+  "missing_requirements": [
+    {
+      "id": "REQ-43",
+      "requirement": "Improve mobile input handling in the game view to avoid accidental browser gestures and provide predictable touch interactions (prevent unwanted page scroll while interacting with the game canvas; ensure UI remains scrollable where intended).",
+      "reason": "In the provided GameCanvas.tsx snippet there is no shown application of touch-action / pointer event handling (e.g., setting CSS touch-action: none/manipulation on the canvas/container, or adding touchmove handlers with preventDefault) to prevent page scroll/bounce while interacting with the canvas. index.css defines a .touch-manipulation utility, but the diff evidence does not show it being applied to the game canvas/container.",
+      "evidence": [
+        "frontend/src/game/render/GameCanvas.tsx",
+        "frontend/src/index.css"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Added an 'xs' Tailwind breakpoint (475px).",
+      "reason": "Not explicitly requested in REQ-40–REQ-45; it is an additional styling capability introduced as part of the changes.",
+      "evidence": [
+        "frontend/tailwind.config.js"
+      ]
+    }
+  ],
+  "confidence": 0.68,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/components/ProfileSetupDialog.tsx",
+    "frontend/src/components/StoreInitializer.tsx",
+    "frontend/src/features/sectors/SectorsPanel.tsx",
+    "frontend/src/game/GameHUD.tsx",
+    "frontend/src/game/GameScene.tsx",
+    "frontend/src/game/render/GameCanvas.tsx",
+    "frontend/src/index.css",
+    "frontend/src/pages/TitleScreen.tsx",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

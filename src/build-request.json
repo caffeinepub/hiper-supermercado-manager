@@ -1,0 +1,140 @@
+{
+  "kind": "build_request",
+  "title": "Mobile optimization (responsive UI, touch-friendly controls, and canvas scaling)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-40",
+      "text": "Make the app layout fully responsive on mobile (320px width and up) for the Title Screen, Profile Setup flow, Store Initializer flow, and in-game HUD, ensuring no UI is clipped off-screen and primary actions remain reachable with one hand.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Otimização para mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On iPhone SE / 360x640 emulation, TitleScreen content fits without horizontal scrolling and without overlapping the Start/Login/About controls.",
+        "On small screens, dialogs/sheets used during profile setup and store initialization fit within the viewport and remain scrollable if content exceeds height.",
+        "In GameScene, HUD controls do not overlap each other or render off-screen at common mobile breakpoints (e.g., 360x640, 390x844)."
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Update the in-game HUD to be touch-friendly on mobile by increasing tap target sizes, preventing control crowding, and adapting the bottom action row into a mobile-friendly layout (e.g., wrapping, compact labels, or a more mobile-appropriate arrangement) while keeping all user-facing text in English.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Otimização para mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All interactive HUD controls have a minimum ~44px tap target (or equivalent Tailwind sizing) on small screens.",
+        "The bottom HUD actions (Sectors, Logistics, Finance, Settings) remain usable on mobile without overlapping and without requiring horizontal scrolling.",
+        "The top HUD (Funds, Reputation, Day, Pause/Play, Speed) remains readable and usable on mobile without covering critical screen area excessively."
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "text": "Make the game canvas responsive and mobile-performant by sizing it to the available viewport/container instead of a fixed 800x600, and render at an appropriate devicePixelRatio (clamped) to keep visuals crisp without overloading mobile GPUs.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Otimização para mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "GameCanvas scales to fill the available game area on different screen sizes and orientations (portrait/landscape) without distortion or clipping.",
+        "Canvas rendering accounts for devicePixelRatio with a reasonable clamp (e.g., <=2) so text/lines are not blurry on retina devices while avoiding excessive resolution on mobile.",
+        "No horizontal page scrolling is introduced by the canvas on mobile."
+      ]
+    },
+    {
+      "id": "REQ-43",
+      "text": "Improve mobile input handling in the game view to avoid accidental browser gestures and provide predictable touch interactions for gameplay viewing (at minimum: prevent unwanted page scroll while interacting with the game canvas; ensure UI remains scrollable where intended such as sheets/panels).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Otimização para mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Touch interactions on the game canvas do not cause the page to scroll or bounce the viewport unexpectedly.",
+        "Scrollable UI surfaces (e.g., the Sectors sheet content) continue to scroll normally on mobile.",
+        "No new browser console errors are introduced during touch interactions."
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "text": "Optimize the canvas render loop for mobile browsers by avoiding unnecessary fixed-interval redraws and reducing rerender frequency when possible, while preserving the current visual behavior.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Otimização para mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "GameCanvas no longer relies on an unconditional setInterval redraw if an animation frame approach or a simulation-driven redraw can reduce redundant work.",
+        "CPU usage is visibly reduced in devtools performance profiling on mobile emulation compared to a constant 10 FPS interval redraw, without breaking the displayed state updates.",
+        "Rendering continues to update smoothly during simulation changes (e.g., customer movement)."
+      ]
+    },
+    {
+      "id": "REQ-45",
+      "text": "Make the Sectors panel content mobile-friendly by ensuring tables/cards are readable on small screens (e.g., responsive typography, wrapping, and allowing horizontal scroll for the table region if needed) without breaking desktop layout.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "Otimização para mobile"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On small screens, the SectorsPanel content does not overflow the viewport; long rows/columns remain accessible (e.g., via horizontal scrolling inside the table container).",
+        "Text remains legible on mobile and key sector stats are still visible without excessive truncation.",
+        "Desktop layout (>=1024px) is not degraded."
+      ]
+    }
+  ],
+  "constraints": [
+    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Keep all user-facing text in English."
+  ],
+  "nonGoals": [
+    "Adding new gameplay systems (inventory, finance, logistics) beyond UI/layout/input changes needed for mobile.",
+    "Backend (Motoko) changes or state schema changes for this mobile optimization pass.",
+    "Introducing third-party mobile frameworks or native app packaging."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Prioritize mobile-responsive UI, touch-friendly controls, and mobile browser performance optimizations."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}
