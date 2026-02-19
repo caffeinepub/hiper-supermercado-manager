@@ -1,52 +1,46 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Supermarket game with Facebook-style gameplay",
-  "architectural_notes": [
-    "Facebook-style casual game mechanics required"
-  ],
-  "known_issues": [
-    "Game failing to load/open - needs immediate fix"
-  ],
-  "isFixRequest": true,
+  "summary": "Supermarket game project",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-diagnose-and-fix-the-critical-error-preventing-the-game-from-loading-or-opening-in-the-browser",
-      "title": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
+      "id": "feature-display-all-17-store-sectors-produce-butcher-fish-bakery-dairy-frozen-beverages-snacks-canned-cleaning-personal-care-baby-pet-electronics-clothing-home-pharmacy-as-visible-elements-on-the-store-floor-canvas-with-their-icons-and-names",
+      "title": "Display all 17 store sectors (Produce, Butcher, Fish, Bakery, Dairy, Frozen, Beverages, Snacks, Canned, Cleaning, Personal Care, Baby, Pet, Electronics, Clothing, Home, Pharmacy) as visible elements on the store floor canvas with their icons and names",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-verify-that-the-store-initialization-flow-completes-successfully-without-errors",
-      "title": "Verify that the store initialization flow completes successfully without errors",
+      "id": "feature-render-products-within-their-assigned-sectors-on-the-store-floor-showing-product-names-and-stock-levels-from-the-initialproducts-ts-data",
+      "title": "Render products within their assigned sectors on the store floor, showing product names and stock levels from the initialProducts.ts data",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-ensure-the-gamescene-component-renders-properly-after-authentication-and-profile-setup",
-      "title": "Ensure the GameScene component renders properly after authentication and profile setup",
+      "id": "feature-make-the-store-floor-interactive-allowing-users-to-tap-click-on-sectors-to-view-detailed-information-quality-stock-value-staff-cleanliness-similar-to-the-sectorspanel-component",
+      "title": "Make the store floor interactive, allowing users to tap/click on sectors to view detailed information (quality, stock value, staff, cleanliness) similar to the SectorsPanel component",
       "reqIds": [
         "REQ-3"
       ],
       "version": 1
-    }
-  ],
-  "new_feature_requests": [
+    },
     {
-      "id": "AR-4",
-      "summary": "Fix any backend actor initialization or authentication issues that may prevent game data from loading",
+      "id": "feature-add-visual-representation-of-shelves-aisles-and-product-displays-within-the-store-floor-grid-to-create-a-realistic-supermarket-layout",
+      "title": "Add visual representation of shelves, aisles, and product displays within the store floor grid to create a realistic supermarket layout",
       "reqIds": [
         "REQ-4"
       ],
-      "status": "pending"
+      "version": 1
     }
   ],
-  "gameProjectType": "2d",
-  "projectName": "Supermarket Tycoon",
+  "new_feature_requests": [],
+  "projectName": "Supermarket Game",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

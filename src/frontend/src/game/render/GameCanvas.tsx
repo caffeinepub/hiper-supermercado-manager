@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { GameState } from '../sim/types';
+import { loadAssets, GameAssets } from './assetLoader';
+import { drawAisles } from './renderAisles';
+import { drawSectors } from './renderSectors';
+import { drawProducts } from './renderProducts';
+import { getSectorAtPosition } from '../data/sectorLayout';
+import { useGetProducts } from '../../hooks/useQueries';
+import SectorDetailSheet from '../components/SectorDetailSheet';
 
 interface GameCanvasProps {
   simulation: {
@@ -11,8 +18,27 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [assets, setAssets] = useState<GameAssets | null>(null);
+  const [assetsLoading, setAssetsLoading] = useState(true);
+  const [selectedSector, setSelectedSector] = useState<string | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const animationFrameRef = useRef<number | undefined>(undefined);
   const lastRenderRef = useRef<number>(0);
+  
+  const { data: products = [] } = useGetProducts();
+
+  // Load assets
+  useEffect(() => {
+    loadAssets()
+      .then(loadedAssets => {
+        setAssets(loadedAssets);
+        setAssetsLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to load assets:', error);
+        setAssetsLoading(false);
+      });
+  }, []);
 
   // Handle canvas resizing
   useEffect(() => {
@@ -22,7 +48,6 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
       const container = containerRef.current;
       const rect = container.getBoundingClientRect();
       
-      // Use container dimensions
       const width = rect.width;
       const height = rect.height;
       
@@ -41,10 +66,52 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
     };
   }, []);
 
-  // Rendering loop
+  // Handle canvas clicks/taps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const handleClick = (e: MouseEvent | TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      
+      // Calculate store dimensions and scale
+      const storeWidth = 600;
+      const storeHeight = 400;
+      const scale = Math.min(
+        (dimensions.width - 100) / storeWidth,
+        (dimensions.height - 200) / storeHeight
+      );
+      
+      const offsetX = (dimensions.width - storeWidth * scale) / 2;
+      const offsetY = (dimensions.height - storeHeight * scale) / 2 + 50;
+      
+      // Check if click is within a sector
+      const sectorName = getSectorAtPosition(x, y, scale, offsetX, offsetY);
+      
+      if (sectorName) {
+        setSelectedSector(sectorName);
+        setSheetOpen(true);
+      }
+    };
+
+    canvas.addEventListener('click', handleClick);
+    canvas.addEventListener('touchstart', handleClick as any);
+
+    return () => {
+      canvas.removeEventListener('click', handleClick);
+      canvas.removeEventListener('touchstart', handleClick as any);
+    };
+  }, [dimensions]);
+
+  // Rendering loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !assets) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -78,27 +145,19 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
       const offsetX = (dimensions.width - storeWidth * scale) / 2;
       const offsetY = (dimensions.height - storeHeight * scale) / 2 + 50;
 
-      // Draw grid
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 1;
-      const gridSize = 50 * scale;
-      for (let x = offsetX; x < offsetX + storeWidth * scale; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, offsetY);
-        ctx.lineTo(x, offsetY + storeHeight * scale);
-        ctx.stroke();
-      }
-      for (let y = offsetY; y < offsetY + storeHeight * scale; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(offsetX, y);
-        ctx.lineTo(offsetX + storeWidth * scale, y);
-        ctx.stroke();
-      }
-
       // Draw store outline
       ctx.strokeStyle = '#666';
       ctx.lineWidth = 3;
       ctx.strokeRect(offsetX, offsetY, storeWidth * scale, storeHeight * scale);
+
+      // Draw aisles (floor)
+      drawAisles(ctx, assets, storeWidth, storeHeight, scale, offsetX, offsetY);
+
+      // Draw sectors with fixtures
+      drawSectors(ctx, assets, scale, offsetX, offsetY, selectedSector);
+
+      // Draw products
+      drawProducts(ctx, assets, products, scale, offsetX, offsetY);
 
       // Draw entrance
       ctx.fillStyle = '#22c55e';
@@ -138,7 +197,6 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
       ctx.textAlign = 'center';
       ctx.fillText('ENTRANCE', dimensions.width / 2, offsetY - entranceHeight - 5);
       ctx.fillText('CHECKOUT', dimensions.width / 2, offsetY + storeHeight * scale + 30 * scale + fontSize + 5);
-      ctx.fillText('STORE FLOOR', dimensions.width / 2, offsetY + (storeHeight * scale) / 2);
 
       animationFrameRef.current = requestAnimationFrame(render);
     };
@@ -150,7 +208,7 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [dimensions, simulation.gameState]);
+  }, [dimensions, simulation.gameState, assets, products, selectedSector]);
 
   // Touch handling to prevent page scroll
   useEffect(() => {
@@ -170,19 +228,41 @@ export default function GameCanvas({ simulation }: GameCanvasProps) {
     };
   }, []);
 
+  if (assetsLoading) {
+    return (
+      <div ref={containerRef} className="absolute inset-0 flex items-center justify-center">
+        <div className="text-muted-foreground">Loading store assets...</div>
+      </div>
+    );
+  }
+
   return (
-    <div ref={containerRef} className="absolute inset-0 flex items-center justify-center">
-      <canvas
-        ref={canvasRef}
-        style={{
-          width: `${dimensions.width}px`,
-          height: `${dimensions.height}px`,
-          maxWidth: '100%',
-          maxHeight: '100%',
-          touchAction: 'none',
+    <>
+      <div ref={containerRef} className="absolute inset-0 flex items-center justify-center">
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: `${dimensions.width}px`,
+            height: `${dimensions.height}px`,
+            maxWidth: '100%',
+            maxHeight: '100%',
+            touchAction: 'none',
+            cursor: 'pointer',
+          }}
+          className="border border-border rounded-lg no-select"
+        />
+      </div>
+      
+      <SectorDetailSheet
+        sectorName={selectedSector}
+        open={sheetOpen}
+        onOpenChange={(open) => {
+          setSheetOpen(open);
+          if (!open) {
+            setSelectedSector(null);
+          }
         }}
-        className="border border-border rounded-lg no-select"
       />
-    </div>
+    </>
   );
 }

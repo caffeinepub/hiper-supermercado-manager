@@ -12,10 +12,7 @@ export default function GameScene() {
   const simulation = useGameSimulation();
 
   useEffect(() => {
-    // Since backend doesn't have sector methods yet, skip the check
-    // and proceed directly to initialization
     if (!isLoading) {
-      // Auto-proceed after a short delay
       const timer = setTimeout(() => {
         if (!storeInitialized) {
           console.log('Proceeding to store initialization');

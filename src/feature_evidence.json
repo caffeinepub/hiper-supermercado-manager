@@ -2,11 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-diagnose-and-fix-the-critical-error-preventing-the-game-from-loading-or-opening-in-the-browser",
-      "featureTitle": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
+      "featureId": "feature-display-all-17-store-sectors-produce-butcher-fish-bakery-dairy-frozen-beverages-snacks-canned-cleaning-personal-care-baby-pet-electronics-clothing-home-pharmacy-as-visible-elements-on-the-store-floor-canvas-with-their-icons-and-names",
+      "featureTitle": "Display all 17 store sectors (Produce, Butcher, Fish, Bakery, Dairy, Frozen, Beverages, Snacks, Canned, Cleaning, Personal Care, Baby, Pet, Electronics, Clothing, Home, Pharmacy) as visible elements on the store floor canvas with their icons and names",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/ErrorBoundary.tsx"
+        "frontend/src/game/GameScene.tsx",
+        "frontend/src/game/render/GameCanvas.tsx",
+        "frontend/src/game/render/assetLoader.ts",
+        "frontend/src/game/render/renderSectors.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,11 +24,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-verify-that-the-store-initialization-flow-completes-successfully-without-errors",
-      "featureTitle": "Verify that the store initialization flow completes successfully without errors",
+      "featureId": "feature-render-products-within-their-assigned-sectors-on-the-store-floor-showing-product-names-and-stock-levels-from-the-initialproducts-ts-data",
+      "featureTitle": "Render products within their assigned sectors on the store floor, showing product names and stock levels from the initialProducts.ts data",
       "files": [
-        "frontend/src/components/StoreInitializer.tsx",
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/game/render/GameCanvas.tsx",
+        "frontend/src/game/render/renderProducts.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -42,11 +44,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-ensure-the-gamescene-component-renders-properly-after-authentication-and-profile-setup",
-      "featureTitle": "Ensure the GameScene component renders properly after authentication and profile setup",
+      "featureId": "feature-make-the-store-floor-interactive-allowing-users-to-tap-click-on-sectors-to-view-detailed-information-quality-stock-value-staff-cleanliness-similar-to-the-sectorspanel-component",
+      "featureTitle": "Make the store floor interactive, allowing users to tap/click on sectors to view detailed information (quality, stock value, staff, cleanliness) similar to the SectorsPanel component",
       "files": [
-        "frontend/src/game/GameScene.tsx",
-        "frontend/src/pages/TitleScreen.tsx"
+        "frontend/src/game/components/SectorDetailSheet.tsx",
+        "frontend/src/game/render/GameCanvas.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -58,6 +60,28 @@
       ],
       "testIds": [
         "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-visual-representation-of-shelves-aisles-and-product-displays-within-the-store-floor-grid-to-create-a-realistic-supermarket-layout",
+      "featureTitle": "Add visual representation of shelves, aisles, and product displays within the store floor grid to create a realistic supermarket layout",
+      "files": [
+        "frontend/src/game/data/sectorLayout.ts",
+        "frontend/src/game/render/GameCanvas.tsx",
+        "frontend/src/game/render/renderAisles.ts",
+        "frontend/src/game/render/renderSectors.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

@@ -1,82 +1,91 @@
 {
   "kind": "build_request",
-  "title": "Fix game loading failure",
-  "projectName": "Supermarket Tycoon",
+  "title": "Add visible sectors and products to store floor",
+  "projectName": "Hiper Supermercado Manager",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
-      "target": "both",
+      "text": "Display all 17 store sectors (Produce, Butcher, Fish, Bakery, Dairy, Frozen, Beverages, Snacks, Canned, Cleaning, Personal Care, Baby, Pet, Electronics, Clothing, Home, Pharmacy) as visible elements on the store floor canvas with their icons and names",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-5"
         ],
         "quotes": [
-          "O jogo ainda não está abrindo ainda corrigir o erro rápido"
+          "Se vc fala q isto é um jogo completando supermercado então pode fazer uma atualização no seu banco de dados"
         ]
       },
       "acceptanceCriteria": [
-        "The game successfully loads and displays the title screen",
-        "No console errors prevent the game from initializing",
-        "The canvas renders correctly when entering the game"
+        "Each sector appears as a labeled area on the store floor grid",
+        "Sector icons from sectorConstants.ts are rendered for each department",
+        "Sector names are clearly visible",
+        "Sectors are positioned logically within the store layout"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Verify that the store initialization flow completes successfully without errors",
+      "text": "Render products within their assigned sectors on the store floor, showing product names and stock levels from the initialProducts.ts data",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-5"
+        ],
+        "quotes": [
+          "Se vc fala q isto é um jogo completando supermercado então pode fazer uma atualização no seu banco de dados"
         ]
       },
       "acceptanceCriteria": [
-        "StoreInitializer component completes without throwing errors",
-        "Sectors and products are created successfully",
-        "Progress feedback displays correctly during setup"
+        "Products from initialProducts.ts appear within their corresponding sector areas",
+        "Product names are visible on shelves or display areas",
+        "Stock levels or quantity indicators are shown for each product",
+        "Products are distributed across all 24 items and 17 sectors as defined in initialProducts.ts"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Ensure the GameScene component renders properly after authentication and profile setup",
+      "text": "Make the store floor interactive, allowing users to tap/click on sectors to view detailed information (quality, stock value, staff, cleanliness) similar to the SectorsPanel component",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-5"
         ]
       },
       "acceptanceCriteria": [
-        "GameScene loads after completing profile setup",
-        "Canvas displays the game grid and elements",
-        "HUD elements render correctly on top of the canvas"
+        "Tapping a sector on the canvas opens a detail view or overlay",
+        "Sector details display quality, stock, value, staff, and cleanliness metrics",
+        "Mobile-optimized touch targets (minimum 44px) for sector selection",
+        "Visual feedback when selecting a sector"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Fix any backend actor initialization or authentication issues that may prevent game data from loading",
-      "target": "backend",
+      "text": "Add visual representation of shelves, aisles, and product displays within the store floor grid to create a realistic supermarket layout",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-current"
+          "msg-5"
         ]
       },
       "acceptanceCriteria": [
-        "Backend actor initializes correctly with user identity",
-        "Store data queries return valid responses",
-        "No authentication errors block game functionality"
+        "Shelving units are drawn within sector areas",
+        "Aisles between sectors are clearly visible for customer movement",
+        "Product displays (refrigerators, freezers, bakery cases) are rendered appropriately for each sector type",
+        "Visual distinction between different types of display fixtures"
       ]
     }
   ],
   "constraints": [
-    "Fix must restore game functionality without breaking existing features",
-    "Maintain mobile-responsive design implemented in previous versions",
-    "Preserve user authentication flow through Internet Identity"
+    "Do not modify the existing customer simulation or animation logic in useGameSimulation.ts",
+    "Maintain the current GameCanvas rendering architecture using canvas 2D context",
+    "Keep the existing sector metadata definitions in sectorConstants.ts unchanged",
+    "Preserve the 24 products defined in initialProducts.ts without modification"
   ],
   "nonGoals": [
-    "Adding new gameplay features",
-    "Redesigning the UI beyond what's needed to fix the loading issue",
-    "Implementing Facebook-specific integrations (will be addressed separately)"
+    "Changing the backend data structure or API endpoints",
+    "Modifying the authentication or profile setup flow",
+    "Adding new game mechanics or simulation features",
+    "Implementing 3D rendering or Three.js graphics"
   ],
   "imageRequirements": {
     "required": [],

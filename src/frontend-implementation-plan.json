@@ -1,93 +1,123 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix game loading failure",
+  "title": "Add visible sectors and products to store floor",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
+      "summary": "Display all 17 store sectors as visible elements on the store floor canvas with icons and names",
       "acceptanceCriteria": [
-        "The game successfully loads and displays the title screen",
-        "No console errors prevent the game from initializing",
-        "The canvas renders correctly when entering the game"
+        "Each sector appears as a labeled area on the store floor grid",
+        "Sector icons from sectorConstants.ts are rendered for each department",
+        "Sector names are clearly visible",
+        "Sectors are positioned logically within the store layout"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/game/render/GameCanvas.tsx",
           "operation": "modify",
-          "description": "Add comprehensive error boundaries and logging to capture initialization failures. Wrap main render sections with error handling that shows user-friendly error messages. Add debug logging for authentication state, profile loading state, and scene transition state. Ensure proper conditional rendering prevents premature component mounting. Verify the component correctly handles all authentication states (logging-in, logged-out, logged-in) and profile states (loading, null, present) before showing game UI."
+          "description": "Extend the canvas rendering to draw sector areas within the store grid. Use the generated tileset assets (frontend/public/assets/generated/hsm-tileset.dim_2048x2048.png and frontend/public/assets/generated/department-counters.dim_1024x1024.png) to render sector backgrounds and department fixtures. Position all 17 sectors from sectorConstants.ts in a logical supermarket layout (e.g., Produce near entrance, Frozen/Dairy along back wall, Checkout near exit). Render sector icons and names as text labels over each sector area. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/hooks/useActor.ts",
-          "operation": "modify",
-          "description": "Add error handling for actor initialization failures. Include retry logic for transient network errors. Add detailed console logging for actor creation, identity changes, and initialization attempts. Ensure the actor is not used before it's fully initialized. Verify that the actor properly refreshes when identity changes and that dependent queries are invalidated correctly."
-        },
-        {
-          "path": "frontend/src/main.tsx",
-          "operation": "modify",
-          "description": "Add a top-level error boundary that catches React rendering errors and displays a recovery UI. Ensure QueryClientProvider and InternetIdentityProvider are properly configured with error handlers. Add fallback UI for when providers fail to initialize. Include logging to capture any bootstrapping errors."
-        },
-        {
-          "path": "frontend/src/components/ErrorBoundary.tsx",
+          "path": "frontend/src/game/render/renderSectors.ts",
           "operation": "create",
-          "description": "Create a reusable ErrorBoundary component that catches React errors, logs them to console, and displays a user-friendly error message with a reload button. Include props for custom fallback UI and error reporting callbacks."
+          "description": "Create a utility module that renders sector areas on the canvas context. Accept canvas context, sector data from backend, and grid dimensions. For each of the 17 sectors, draw a background rectangle with the sector's color from sectorConstants.ts, render the sector icon using the hsm-ui-icons tileset (frontend/public/assets/generated/hsm-ui-icons.dim_1024x1024.png), and draw the sector name as text. Handle responsive scaling and device pixel ratio. Export a drawSectors function that GameCanvas can call during its render loop."
+        },
+        {
+          "path": "frontend/src/game/render/assetLoader.ts",
+          "operation": "create",
+          "description": "Create an asset loader utility that preloads and caches the generated image assets (hsm-tileset.dim_2048x2048.png, department-counters.dim_1024x1024.png, hsm-ui-icons.dim_1024x1024.png, aisle-shelves-tileset.dim_1024x1024.png) as HTMLImageElement instances. Provide a loadAssets function that returns a Promise resolving to an asset map. Export getter functions for each asset. This ensures images are ready before rendering begins."
+        },
+        {
+          "path": "frontend/src/game/GameScene.tsx",
+          "operation": "modify",
+          "description": "Import and call the asset loader before rendering GameCanvas. Show a loading state while assets are being loaded. Pass loaded assets to GameCanvas as props so the rendering logic can access the tileset images."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Verify that the store initialization flow completes successfully without errors",
+      "summary": "Render products within their assigned sectors showing names and stock levels",
       "acceptanceCriteria": [
-        "StoreInitializer component completes without throwing errors",
-        "Sectors and products are created successfully",
-        "Progress feedback displays correctly during setup"
+        "Products from initialProducts.ts appear within their corresponding sector areas",
+        "Product names are visible on shelves or display areas",
+        "Stock levels or quantity indicators are shown for each product",
+        "Products are distributed across all 24 items and 17 sectors as defined in initialProducts.ts"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/StoreInitializer.tsx",
+          "path": "frontend/src/game/render/renderProducts.ts",
+          "operation": "create",
+          "description": "Create a utility module that renders products within sector areas on the canvas. Accept canvas context, product data from backend (matching initialProducts.ts structure), and sector position data. For each product, determine its sector from sectorConstants.ts, calculate a position within that sector's area (distribute products across shelves), draw a small product icon or rectangle, render the product name as text, and display a stock level badge/indicator. Use the aisle-shelves-tileset asset (frontend/public/assets/generated/aisle-shelves-tileset.dim_1024x1024.png) to draw shelf backgrounds for products. Export a drawProducts function."
+        },
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
           "operation": "modify",
-          "description": "Add comprehensive error handling with try-catch blocks around all backend calls. Include detailed logging for each initialization step (createStore, sector creation, product creation). Add timeout handling for long-running operations. Ensure the component properly handles cases where the store already exists or partial initialization occurred. Display specific error messages for different failure types (network errors, backend traps, timeout). Add retry capability for failed operations. Verify the component waits for the actor to be available before attempting initialization."
+          "description": "Integrate the drawProducts function into the canvas render loop. Fetch product data using the useGetProducts hook from useQueries.ts and pass it to the rendering function. Ensure products are drawn after sector areas but before customers so they appear layered correctly. Handle loading and error states for product data."
         },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Review and enhance error handling for all mutation hooks (useCreateStore, useAddSector, useAddProduct). Add proper error propagation so StoreInitializer receives detailed error information. Ensure mutations properly invalidate related queries on success. Add logging for mutation lifecycle events. Verify that actor dependency is properly checked before executing mutations."
+          "description": "Ensure the useGetProducts hook properly fetches all product data including stock levels from the backend. Verify the hook returns products matching the initialProducts.ts structure with productId, name, sector, and current stock quantity. If backend returns stock data separately, merge it with product metadata in the hook."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Ensure the GameScene component renders properly after authentication and profile setup",
+      "summary": "Make the store floor interactive with tap/click to view sector details",
       "acceptanceCriteria": [
-        "GameScene loads after completing profile setup",
-        "Canvas displays the game grid and elements",
-        "HUD elements render correctly on top of the canvas"
+        "Tapping a sector on the canvas opens a detail view or overlay",
+        "Sector details display quality, stock, value, staff, and cleanliness metrics",
+        "Mobile-optimized touch targets (minimum 44px) for sector selection",
+        "Visual feedback when selecting a sector"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/game/GameScene.tsx",
+          "path": "frontend/src/game/render/GameCanvas.tsx",
           "operation": "modify",
-          "description": "Add loading state checks and error boundaries. Ensure the component doesn't render until all required data (sectors, products, initial game state) is loaded. Add fallback UI for loading and error states. Include detailed logging for component lifecycle, data fetching, and rendering. Verify that useGameSimulation and GameCanvas only initialize after data is ready. Add guards to prevent rendering with incomplete data. Handle cases where backend queries fail or return empty data."
+          "description": "Add touch and click event handlers to the canvas element. On tap/click, convert screen coordinates to canvas grid coordinates accounting for scaling and device pixel ratio. Determine which sector was tapped by checking if the coordinates fall within any sector's rendered area. If a sector is hit, store the selected sector ID in component state and trigger a visual highlight effect (draw an outline or overlay on the selected sector). Ensure touch targets meet the 44px minimum by expanding hitbox areas if needed."
+        },
+        {
+          "path": "frontend/src/game/components/SectorDetailSheet.tsx",
+          "operation": "create",
+          "description": "Create a Sheet component that displays detailed information for a selected sector. Accept a sectorId prop and use useGetSector hook to fetch quality, stock value, staff count, and cleanliness metrics. Display this data in a mobile-friendly layout similar to the SectorsPanel component's sector cards. Include sector icon, name, and all metrics with clear labels. Add a close button to dismiss the sheet. Use shadcn/ui Sheet component for consistent mobile drawer behavior with minimum 44px tap targets."
         },
         {
           "path": "frontend/src/game/render/GameCanvas.tsx",
           "operation": "modify",
-          "description": "Add null checks and error handling for canvas context acquisition. Ensure proper cleanup of animation frames and resize listeners. Add logging for render loop execution and any drawing errors. Verify that the canvas properly handles window resizing and scaling. Add fallback rendering for when game state data is missing or malformed. Include error recovery for canvas rendering failures."
+          "description": "Import and render the SectorDetailSheet component adjacent to the canvas. Pass the selected sector ID from canvas state to the sheet. Control the sheet's open state based on whether a sector is selected. When the sheet closes, clear the selected sector state and remove the visual highlight from the canvas."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add visual representation of shelves, aisles, and product displays",
+      "acceptanceCriteria": [
+        "Shelving units are drawn within sector areas",
+        "Aisles between sectors are clearly visible for customer movement",
+        "Product displays (refrigerators, freezers, bakery cases) are rendered appropriately for each sector type",
+        "Visual distinction between different types of display fixtures"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/render/renderSectors.ts",
+          "operation": "modify",
+          "description": "Enhance the sector rendering to include shelving units and specialized displays. For each sector, draw appropriate fixtures using the department-counters tileset (frontend/public/assets/generated/department-counters.dim_1024x1024.png): refrigerators for Dairy/Frozen, counters for Butcher/Fish/Bakery, standard shelves for other departments using aisle-shelves-tileset (frontend/public/assets/generated/aisle-shelves-tileset.dim_1024x1024.png). Position fixtures to leave aisle space between sectors. Use different tileset regions for different fixture types to create visual distinction."
         },
         {
-          "path": "frontend/src/game/GameHUD.tsx",
-          "operation": "modify",
-          "description": "Add error boundaries around HUD components. Include loading states for data that's fetched asynchronously. Add null checks for all game state properties before rendering. Ensure the HUD properly handles missing or incomplete data. Add logging for HUD update cycles and data changes."
+          "path": "frontend/src/game/render/renderAisles.ts",
+          "operation": "create",
+          "description": "Create a utility module that draws aisle pathways on the canvas. Calculate aisle positions as the negative space between sector areas. Draw aisle floor tiles using the supermarket-floor tileset (frontend/public/assets/generated/supermarket-floor.dim_512x512.png). Ensure aisles are wide enough for customer sprite movement (reference the customers-sprites asset frontend/public/assets/generated/customers-sprites.dim_1024x1024.png for scale). Export a drawAisles function that GameCanvas calls before drawing sectors so aisles appear as background."
         },
         {
-          "path": "frontend/src/game/sim/useGameSimulation.ts",
+          "path": "frontend/src/game/render/GameCanvas.tsx",
           "operation": "modify",
-          "description": "Add error handling for game loop execution. Ensure the simulation doesn't start until initial state is properly loaded. Add guards to prevent state updates with invalid data. Include logging for simulation tick execution and state changes. Verify proper cleanup of intervals and timers when component unmounts or game stops."
+          "description": "Integrate the drawAisles function into the render loop. Call it after drawing the base grid but before drawing sectors and products. This creates a proper layering where floor -> aisles -> sectors -> shelves -> products -> customers. Ensure the rendering order maintains visual hierarchy."
         },
         {
-          "path": "frontend/src/pages/TitleScreen.tsx",
-          "operation": "modify",
-          "description": "Add error handling for the Start Game button click handler. Ensure proper state transitions when moving from title screen to game scene. Add logging for navigation events. Verify that authentication state is properly checked before allowing game start. Include user feedback for when prerequisites (authentication, profile) are not met."
+          "path": "frontend/src/game/data/sectorLayout.ts",
+          "operation": "create",
+          "description": "Define a layout configuration that maps each of the 17 sectors to specific grid positions and dimensions on the store floor. Include fixture type metadata (shelf, counter, refrigerator) for each sector based on sectorConstants.ts definitions. Export a SECTOR_LAYOUT constant that rendering utilities can reference to position sectors consistently. This separates layout logic from rendering logic for easier maintenance."
         }
       ]
     }
