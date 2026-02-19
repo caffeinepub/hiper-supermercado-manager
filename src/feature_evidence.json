@@ -2,14 +2,50 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-make-the-app-layout-fully-responsive-on-mobile-320px-width-and-up-for-the-title-screen-profile-setup-flow-store-initializer-flow-and-in-game-hud-ensuring-no-ui-is-clipped-off-screen-and-primary-actions-remain-reachable-with-one-hand",
-      "featureTitle": "Make the app layout fully responsive on mobile (320px width and up) for the Title Screen, Profile Setup flow, Store Initializer flow, and in-game HUD, ensuring no UI is clipped off-screen and primary actions remain reachable with one hand.",
+      "featureId": "feature-diagnose-and-fix-the-critical-error-preventing-the-game-from-loading-or-opening-in-the-browser",
+      "featureTitle": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
       "files": [
-        "frontend/src/components/ProfileSetupDialog.tsx",
+        "frontend/src/App.tsx",
+        "frontend/src/components/ErrorBoundary.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-verify-that-the-store-initialization-flow-completes-successfully-without-errors",
+      "featureTitle": "Verify that the store initialization flow completes successfully without errors",
+      "files": [
         "frontend/src/components/StoreInitializer.tsx",
-        "frontend/src/game/GameHUD.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-gamescene-component-renders-properly-after-authentication-and-profile-setup",
+      "featureTitle": "Ensure the GameScene component renders properly after authentication and profile setup",
+      "files": [
         "frontend/src/game/GameScene.tsx",
-        "frontend/src/index.css",
         "frontend/src/pages/TitleScreen.tsx"
       ],
       "components": [
@@ -21,107 +57,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-40"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-in-game-hud-to-be-touch-friendly-on-mobile-by-increasing-tap-target-sizes-preventing-control-crowding-and-adapting-the-bottom-action-row-into-a-mobile-friendly-layout-e-g-wrapping-compact-labels-or-a-more-mobile-appropriate-arrangement-while-keeping-all-user-facing-text-in-english",
-      "featureTitle": "Update the in-game HUD to be touch-friendly on mobile by increasing tap target sizes, preventing control crowding, and adapting the bottom action row into a mobile-friendly layout (e.g., wrapping, compact labels, or a more mobile-appropriate arrangement) while keeping all user-facing text in English.",
-      "files": [
-        "frontend/src/game/GameHUD.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-41"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-the-game-canvas-responsive-and-mobile-performant-by-sizing-it-to-the-available-viewport-container-instead-of-a-fixed-800x600-and-render-at-an-appropriate-devicepixelratio-clamped-to-keep-visuals-crisp-without-overloading-mobile-gpus",
-      "featureTitle": "Make the game canvas responsive and mobile-performant by sizing it to the available viewport/container instead of a fixed 800x600, and render at an appropriate devicePixelRatio (clamped) to keep visuals crisp without overloading mobile GPUs.",
-      "files": [
-        "frontend/src/game/GameScene.tsx",
-        "frontend/src/game/render/GameCanvas.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-42"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-improve-mobile-input-handling-in-the-game-view-to-avoid-accidental-browser-gestures-and-provide-predictable-touch-interactions-for-gameplay-viewing-at-minimum-prevent-unwanted-page-scroll-while-interacting-with-the-game-canvas-ensure-ui-remains-scrollable-where-intended-such-as-sheets-panels",
-      "featureTitle": "Improve mobile input handling in the game view to avoid accidental browser gestures and provide predictable touch interactions for gameplay viewing (at minimum: prevent unwanted page scroll while interacting with the game canvas; ensure UI remains scrollable where intended such as sheets/panels).",
-      "files": [
-        "frontend/src/game/GameScene.tsx",
-        "frontend/src/game/render/GameCanvas.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-43"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-optimize-the-canvas-render-loop-for-mobile-browsers-by-avoiding-unnecessary-fixed-interval-redraws-and-reducing-rerender-frequency-when-possible-while-preserving-the-current-visual-behavior",
-      "featureTitle": "Optimize the canvas render loop for mobile browsers by avoiding unnecessary fixed-interval redraws and reducing rerender frequency when possible, while preserving the current visual behavior.",
-      "files": [
-        "frontend/src/game/render/GameCanvas.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-44"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-make-the-sectors-panel-content-mobile-friendly-by-ensuring-tables-cards-are-readable-on-small-screens-e-g-responsive-typography-wrapping-and-allowing-horizontal-scroll-for-the-table-region-if-needed-without-breaking-desktop-layout",
-      "featureTitle": "Make the Sectors panel content mobile-friendly by ensuring tables/cards are readable on small screens (e.g., responsive typography, wrapping, and allowing horizontal scroll for the table region if needed) without breaking desktop layout.",
-      "files": [
-        "frontend/src/features/sectors/SectorsPanel.tsx",
-        "frontend/src/game/GameHUD.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-45"
+        "REQ-3"
       ],
       "confidence": "high"
     }

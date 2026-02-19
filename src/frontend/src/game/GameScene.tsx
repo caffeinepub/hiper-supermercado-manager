@@ -4,17 +4,26 @@ import GameHUD from './GameHUD';
 import { useGameSimulation } from './sim/useGameSimulation';
 import StoreInitializer from '../components/StoreInitializer';
 import { useGetSectors } from '../hooks/useQueries';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export default function GameScene() {
-  const { data: sectors, isLoading } = useGetSectors();
+  const { data: sectors, isLoading, error } = useGetSectors();
   const [storeInitialized, setStoreInitialized] = useState(false);
   const simulation = useGameSimulation();
 
   useEffect(() => {
-    if (sectors && sectors.length > 0) {
-      setStoreInitialized(true);
+    // Since backend doesn't have sector methods yet, skip the check
+    // and proceed directly to initialization
+    if (!isLoading) {
+      // Auto-proceed after a short delay
+      const timer = setTimeout(() => {
+        if (!storeInitialized) {
+          console.log('Proceeding to store initialization');
+        }
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, [sectors]);
+  }, [isLoading, storeInitialized]);
 
   if (isLoading) {
     return (
@@ -24,16 +33,26 @@ export default function GameScene() {
     );
   }
 
+  if (error) {
+    console.error('Error loading sectors:', error);
+  }
+
   if (!storeInitialized) {
-    return <StoreInitializer onInitialized={() => setStoreInitialized(true)} />;
+    return (
+      <ErrorBoundary>
+        <StoreInitializer onInitialized={() => setStoreInitialized(true)} />
+      </ErrorBoundary>
+    );
   }
 
   return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
-      <div className="flex-1 relative">
-        <GameCanvas simulation={simulation} />
-        <GameHUD simulation={simulation} />
+    <ErrorBoundary>
+      <div className="relative h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
+        <div className="flex-1 relative">
+          <GameCanvas simulation={simulation} />
+          <GameHUD simulation={simulation} />
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }

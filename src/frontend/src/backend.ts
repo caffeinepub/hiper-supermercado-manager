@@ -89,38 +89,10 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface StoreSectorSnapshot {
-    name: string;
-    qualityLevel: bigint;
-    stock: Array<StockItem>;
-    staffAssigned: bigint;
-    cleanliness: bigint;
-}
-export interface StockItem {
-    purchasePrice: number;
-    sellingPrice: number;
-    productId: string;
-    expirationTime: bigint;
-    quantity: bigint;
-}
-export interface Delivery {
-    arrivalTime: bigint;
-    supplierName: string;
-    productId: string;
-    quantity: bigint;
-}
 export interface UserProfile {
     name: string;
     createdAt: bigint;
     storeName: string;
-}
-export interface Product {
-    id: string;
-    name: string;
-    sector: string;
-    sellPrice: number;
-    shelfLife: bigint;
-    baseCost: number;
 }
 export enum UserRole {
     admin = "admin",
@@ -129,23 +101,15 @@ export enum UserRole {
 }
 export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
-    addProduct(productId: string, name: string, baseCost: number, sellPrice: number, sector: string, shelfLife: bigint): Promise<void>;
-    addSector(sectorName: string): Promise<void>;
-    addSupplier(supplierName: string, priceModifier: number, deliveryTime: bigint, quality: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createStore(): Promise<void>;
+    getAllUserProfiles(): Promise<Array<[Principal, UserProfile]>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getFunds(): Promise<number>;
-    getPendingDeliveries(): Promise<Array<Delivery>>;
-    getReputation(): Promise<number>;
-    getSectors(): Promise<Array<StoreSectorSnapshot>>;
-    getStoreProducts(): Promise<Array<Product>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
-    orderStock(productId: string, quantity: bigint, supplierName: string): Promise<void>;
-    receiveDeliveries(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    testInitialization(): Promise<boolean>;
 }
 import type { UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -161,48 +125,6 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor._initializeAccessControlWithSecret(arg0);
-            return result;
-        }
-    }
-    async addProduct(arg0: string, arg1: string, arg2: number, arg3: number, arg4: string, arg5: bigint): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.addProduct(arg0, arg1, arg2, arg3, arg4, arg5);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.addProduct(arg0, arg1, arg2, arg3, arg4, arg5);
-            return result;
-        }
-    }
-    async addSector(arg0: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.addSector(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.addSector(arg0);
-            return result;
-        }
-    }
-    async addSupplier(arg0: string, arg1: number, arg2: bigint, arg3: bigint): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.addSupplier(arg0, arg1, arg2, arg3);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.addSupplier(arg0, arg1, arg2, arg3);
             return result;
         }
     }
@@ -234,6 +156,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getAllUserProfiles(): Promise<Array<[Principal, UserProfile]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllUserProfiles();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllUserProfiles();
+            return result;
+        }
+    }
     async getCallerUserProfile(): Promise<UserProfile | null> {
         if (this.processError) {
             try {
@@ -260,76 +196,6 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getCallerUserRole();
             return from_candid_UserRole_n4(this._uploadFile, this._downloadFile, result);
-        }
-    }
-    async getFunds(): Promise<number> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getFunds();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getFunds();
-            return result;
-        }
-    }
-    async getPendingDeliveries(): Promise<Array<Delivery>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getPendingDeliveries();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getPendingDeliveries();
-            return result;
-        }
-    }
-    async getReputation(): Promise<number> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getReputation();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getReputation();
-            return result;
-        }
-    }
-    async getSectors(): Promise<Array<StoreSectorSnapshot>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getSectors();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getSectors();
-            return result;
-        }
-    }
-    async getStoreProducts(): Promise<Array<Product>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getStoreProducts();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getStoreProducts();
-            return result;
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
@@ -360,34 +226,6 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async orderStock(arg0: string, arg1: bigint, arg2: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.orderStock(arg0, arg1, arg2);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.orderStock(arg0, arg1, arg2);
-            return result;
-        }
-    }
-    async receiveDeliveries(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.receiveDeliveries();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.receiveDeliveries();
-            return result;
-        }
-    }
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
@@ -399,6 +237,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveCallerUserProfile(arg0);
+            return result;
+        }
+    }
+    async testInitialization(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.testInitialization();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.testInitialization();
             return result;
         }
     }

@@ -1,12 +1,12 @@
 {
-  "frontend/src/App.tsx": "Main application component that handles authentication flow, profile setup, and transitions between title screen and game scene with theme provider.",
-  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including user profiles, store management, sectors, products, funds, reputation, deliveries, and mutations for creating/updating data.",
-  "frontend/src/pages/TitleScreen.tsx": "Mobile-responsive title screen using dvh units, safe-area padding, responsive image sizing, and touch-friendly button targets with proper spacing for small screens.",
+  "frontend/src/App.tsx": "Main application component with error boundaries wrapping each major section (profile setup, title screen, game scene) and proper authentication flow handling.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks with explicit TypeScript type definitions for store data structures (StoreSectorSnapshot, Product, Delivery, StockItem), comprehensive error handling, and mock data fallbacks for unimplemented backend methods.",
+  "frontend/src/pages/TitleScreen.tsx": "Title screen with authentication check before allowing game start, disabled start button when not logged in, and dynamic copyright year.",
   "frontend/src/components/LoginButton.tsx": "Reusable login/logout button component that handles Internet Identity authentication and clears query cache on logout.",
   "frontend/src/components/ProfileSetupDialog.tsx": "Profile setup dialog with mobile-optimized layout using ScrollArea for content overflow, responsive padding, and minimum 44px tap targets for inputs and buttons.",
   "frontend/src/features/about/AboutDialog.tsx": "About dialog displaying game information and copyright notice for ITA Games Studios.",
-  "frontend/src/game/GameScene.tsx": "Main game scene container using dvh units and flexbox layout to properly contain the canvas and HUD without overflow on mobile devices.",
-  "frontend/src/components/StoreInitializer.tsx": "Store initialization screen with mobile-responsive card layout using dvh units, safe-area padding, and responsive typography for small screens.",
+  "frontend/src/game/GameScene.tsx": "Main game scene container with error boundary, improved error handling for missing backend data, and automatic progression to game initialization.",
+  "frontend/src/components/StoreInitializer.tsx": "Store initialization component with enhanced error handling, detailed logging, graceful failure recovery, and automatic progression to game even if backend calls fail.",
   "frontend/src/features/sectors/sectorConstants.ts": "Defines all 17 supermarket sector definitions with icons, colors, and descriptions (Produce, Butcher, Fish, Bakery, Dairy, Grocery, Drinks, Frozen, Cleaning, Hygiene, Pet, Electronics, HomeGoods, Bazaar, Pharmacy, Organics, Wholesale).",
   "frontend/src/game/data/initialProducts.ts": "Initial product catalog with 24 products across all sectors including pricing, costs, and shelf life data.",
   "frontend/src/game/sim/useGameSimulation.ts": "Custom hook managing game simulation loop with tick system, customer spawning, movement updates, and pause/speed controls with properly initialized useRef.",
@@ -16,7 +16,8 @@
   "frontend/src/game/GameHUD.tsx": "Mobile-optimized HUD with responsive sizing, minimum 44px tap targets, compact layouts for small screens, abbreviated labels on mobile, safe-area padding, and proper z-index layering.",
   "frontend/src/features/sectors/SectorsPanel.tsx": "Mobile-friendly sectors panel with responsive grid layouts, horizontal scrolling table container, responsive typography, truncated text for small screens, and touch-optimized spacing.",
   "frontend/index.css": "Global styles with OKLCH-based design system featuring purple/blue primary colors, dark theme optimized for a professional supermarket tycoon aesthetic.",
-  "frontend/src/main.tsx": "Application entry point that sets up React Query and Internet Identity providers, rendering the main App component with correct CSS import path.",
+  "frontend/src/main.tsx": "Application entry point with QueryClient configuration, error boundary wrapper, and provider setup for React Query and Internet Identity.",
   "frontend/src/index.css": "Global styles with OKLCH color system, mobile-optimized with dynamic viewport units (dvh), safe-area CSS variables for notched devices, touch-friendly tap targets, and utilities to prevent horizontal overflow.",
-  "frontend/tailwind.config.js": "Tailwind configuration extended with 'xs' breakpoint (475px) for fine-grained mobile responsive design control."
+  "frontend/tailwind.config.js": "Tailwind configuration extended with 'xs' breakpoint (475px) for fine-grained mobile responsive design control.",
+  "frontend/src/components/ErrorBoundary.tsx": "React error boundary component that catches rendering errors, logs them to console, and displays a user-friendly error message with a reload button."
 }

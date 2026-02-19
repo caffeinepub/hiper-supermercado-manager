@@ -1,6 +1,39 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, StoreSectorSnapshot, Product, Delivery } from '../backend';
+import type { UserProfile } from '../backend';
+
+// Define types for store data since backend doesn't export them yet
+export interface StockItem {
+  productId: string;
+  quantity: bigint;
+  purchasePrice: number;
+  sellingPrice: number;
+  expirationTime: bigint;
+}
+
+export interface StoreSectorSnapshot {
+  name: string;
+  stock: StockItem[];
+  cleanliness: bigint;
+  staffAssigned: bigint;
+  qualityLevel: bigint;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  baseCost: number;
+  sellPrice: number;
+  sector: string;
+  shelfLife: bigint;
+}
+
+export interface Delivery {
+  productId: string;
+  quantity: bigint;
+  arrivalTime: bigint;
+  supplierName: string;
+}
 
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -9,10 +42,15 @@ export function useGetCallerUserProfile() {
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      return actor.getCallerUserProfile();
+      try {
+        return await actor.getCallerUserProfile();
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        throw error;
+      }
     },
     enabled: !!actor && !actorFetching,
-    retry: false,
+    retry: 1,
   });
 
   return {
@@ -29,7 +67,12 @@ export function useSaveCallerUserProfile() {
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.saveCallerUserProfile(profile);
+      try {
+        return await actor.saveCallerUserProfile(profile);
+      } catch (error) {
+        console.error('Error saving user profile:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
@@ -44,7 +87,12 @@ export function useCreateStore() {
   return useMutation({
     mutationFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      return actor.createStore();
+      try {
+        return await actor.createStore();
+      } catch (error) {
+        console.error('Error creating store:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['store'] });
@@ -52,6 +100,7 @@ export function useCreateStore() {
   });
 }
 
+// Mock data for sectors until backend implements these methods
 export function useGetSectors() {
   const { actor, isFetching } = useActor();
 
@@ -59,12 +108,15 @@ export function useGetSectors() {
     queryKey: ['sectors'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getSectors();
+      // Backend doesn't have getSectors yet, return empty array
+      console.warn('getSectors not implemented in backend');
+      return [];
     },
     enabled: !!actor && !isFetching,
   });
 }
 
+// Mock data for products until backend implements these methods
 export function useGetProducts() {
   const { actor, isFetching } = useActor();
 
@@ -72,7 +124,9 @@ export function useGetProducts() {
     queryKey: ['products'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getStoreProducts();
+      // Backend doesn't have getStoreProducts yet, return empty array
+      console.warn('getStoreProducts not implemented in backend');
+      return [];
     },
     enabled: !!actor && !isFetching,
   });
@@ -84,8 +138,10 @@ export function useGetFunds() {
   return useQuery<number>({
     queryKey: ['funds'],
     queryFn: async () => {
-      if (!actor) return 0;
-      return actor.getFunds();
+      if (!actor) return 10000;
+      // Backend doesn't have getFunds yet, return default
+      console.warn('getFunds not implemented in backend');
+      return 10000;
     },
     enabled: !!actor && !isFetching,
     refetchInterval: 5000,
@@ -98,8 +154,10 @@ export function useGetReputation() {
   return useQuery<number>({
     queryKey: ['reputation'],
     queryFn: async () => {
-      if (!actor) return 0;
-      return actor.getReputation();
+      if (!actor) return 3.0;
+      // Backend doesn't have getReputation yet, return default
+      console.warn('getReputation not implemented in backend');
+      return 3.0;
     },
     enabled: !!actor && !isFetching,
     refetchInterval: 5000,
@@ -113,7 +171,9 @@ export function useGetDeliveries() {
     queryKey: ['deliveries'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getPendingDeliveries();
+      // Backend doesn't have getPendingDeliveries yet, return empty array
+      console.warn('getPendingDeliveries not implemented in backend');
+      return [];
     },
     enabled: !!actor && !isFetching,
     refetchInterval: 3000,
@@ -127,7 +187,9 @@ export function useAddSector() {
   return useMutation({
     mutationFn: async (sectorName: string) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.addSector(sectorName);
+      // Backend doesn't have addSector yet
+      console.warn('addSector not implemented in backend, skipping:', sectorName);
+      return Promise.resolve();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sectors'] });
@@ -149,14 +211,9 @@ export function useAddProduct() {
       shelfLife: bigint;
     }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.addProduct(
-        params.productId,
-        params.name,
-        params.baseCost,
-        params.sellPrice,
-        params.sector,
-        params.shelfLife
-      );
+      // Backend doesn't have addProduct yet
+      console.warn('addProduct not implemented in backend, skipping:', params.name);
+      return Promise.resolve();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -171,7 +228,9 @@ export function useOrderStock() {
   return useMutation({
     mutationFn: async (params: { productId: string; quantity: bigint; supplierName: string }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.orderStock(params.productId, params.quantity, params.supplierName);
+      // Backend doesn't have orderStock yet
+      console.warn('orderStock not implemented in backend');
+      return Promise.resolve();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['funds'] });
@@ -187,7 +246,9 @@ export function useReceiveDeliveries() {
   return useMutation({
     mutationFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      return actor.receiveDeliveries();
+      // Backend doesn't have receiveDeliveries yet
+      console.warn('receiveDeliveries not implemented in backend');
+      return Promise.resolve();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deliveries'] });

@@ -1,156 +1,93 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Mobile optimization: responsive UI, touch-friendly HUD, and responsive canvas scaling",
+  "title": "Fix game loading failure",
   "requirements": [
     {
-      "id": "REQ-40",
-      "summary": "Make Title Screen, Profile Setup, Store Initializer, and in-game HUD layouts responsive (>=320px), safe-area aware, and free of clipping/overlap.",
+      "id": "REQ-1",
+      "summary": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
       "acceptanceCriteria": [
-        "On iPhone SE / 360x640 emulation, TitleScreen content fits without horizontal scrolling and without overlapping the Start/Login/About controls.",
-        "On small screens, dialogs/sheets used during profile setup and store initialization fit within the viewport and remain scrollable if content exceeds height.",
-        "In GameScene, HUD controls do not overlap each other or render off-screen at common mobile breakpoints (e.g., 360x640, 390x844)."
+        "The game successfully loads and displays the title screen",
+        "No console errors prevent the game from initializing",
+        "The canvas renders correctly when entering the game"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/TitleScreen.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Adjust layout to use mobile-friendly viewport sizing (dvh), safe-area padding, and responsive spacing so the logo + actions fit at 320px width without overlap or horizontal scroll; ensure primary actions remain reachable one-handed."
+          "description": "Add comprehensive error boundaries and logging to capture initialization failures. Wrap main render sections with error handling that shows user-friendly error messages. Add debug logging for authentication state, profile loading state, and scene transition state. Ensure proper conditional rendering prevents premature component mounting. Verify the component correctly handles all authentication states (logging-in, logged-out, logged-in) and profile states (loading, null, present) before showing game UI."
         },
         {
-          "path": "frontend/src/components/ProfileSetupDialog.tsx",
+          "path": "frontend/src/hooks/useActor.ts",
           "operation": "modify",
-          "description": "Make the profile setup dialog content height-constrained on small screens (fit within viewport) and internally scrollable when needed; keep all user-facing text in English. Use the existing shadcn-ui Dialog component styling hooks. Verify the component's usage instructions before implementing."
+          "description": "Add error handling for actor initialization failures. Include retry logic for transient network errors. Add detailed console logging for actor creation, identity changes, and initialization attempts. Ensure the actor is not used before it's fully initialized. Verify that the actor properly refreshes when identity changes and that dependent queries are invalidated correctly."
         },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Add a top-level error boundary that catches React rendering errors and displays a recovery UI. Ensure QueryClientProvider and InternetIdentityProvider are properly configured with error handlers. Add fallback UI for when providers fail to initialize. Include logging to capture any bootstrapping errors."
+        },
+        {
+          "path": "frontend/src/components/ErrorBoundary.tsx",
+          "operation": "create",
+          "description": "Create a reusable ErrorBoundary component that catches React errors, logs them to console, and displays a user-friendly error message with a reload button. Include props for custom fallback UI and error reporting callbacks."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Verify that the store initialization flow completes successfully without errors",
+      "acceptanceCriteria": [
+        "StoreInitializer component completes without throwing errors",
+        "Sectors and products are created successfully",
+        "Progress feedback displays correctly during setup"
+      ],
+      "file_operations": [
         {
           "path": "frontend/src/components/StoreInitializer.tsx",
           "operation": "modify",
-          "description": "Ensure the initializer screen/card scales for small screens (dvh height handling, responsive padding/typography, no clipping) and remains readable without introducing horizontal scroll."
+          "description": "Add comprehensive error handling with try-catch blocks around all backend calls. Include detailed logging for each initialization step (createStore, sector creation, product creation). Add timeout handling for long-running operations. Ensure the component properly handles cases where the store already exists or partial initialization occurred. Display specific error messages for different failure types (network errors, backend traps, timeout). Add retry capability for failed operations. Verify the component waits for the actor to be available before attempting initialization."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Review and enhance error handling for all mutation hooks (useCreateStore, useAddSector, useAddProduct). Add proper error propagation so StoreInitializer receives detailed error information. Ensure mutations properly invalidate related queries on success. Add logging for mutation lifecycle events. Verify that actor dependency is properly checked before executing mutations."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Ensure the GameScene component renders properly after authentication and profile setup",
+      "acceptanceCriteria": [
+        "GameScene loads after completing profile setup",
+        "Canvas displays the game grid and elements",
+        "HUD elements render correctly on top of the canvas"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/GameScene.tsx",
+          "operation": "modify",
+          "description": "Add loading state checks and error boundaries. Ensure the component doesn't render until all required data (sectors, products, initial game state) is loaded. Add fallback UI for loading and error states. Include detailed logging for component lifecycle, data fetching, and rendering. Verify that useGameSimulation and GameCanvas only initialize after data is ready. Add guards to prevent rendering with incomplete data. Handle cases where backend queries fail or return empty data."
+        },
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
+          "operation": "modify",
+          "description": "Add null checks and error handling for canvas context acquisition. Ensure proper cleanup of animation frames and resize listeners. Add logging for render loop execution and any drawing errors. Verify that the canvas properly handles window resizing and scaling. Add fallback rendering for when game state data is missing or malformed. Include error recovery for canvas rendering failures."
         },
         {
           "path": "frontend/src/game/GameHUD.tsx",
           "operation": "modify",
-          "description": "Update HUD layout breakpoints and positioning to avoid overlap/clipping on small screens (top stats/controls and bottom action row), including safe-area offsets where needed."
-        },
-        {
-          "path": "frontend/src/game/GameScene.tsx",
-          "operation": "modify",
-          "description": "Adjust the game scene container styling to be mobile-viewport correct (dvh, safe-area), prevent unintended page scrollbars, and ensure HUD + canvas stay within the visible area."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add global mobile resilience styles: prefer dynamic viewport units, prevent accidental horizontal overflow, and add safe-area helpers (e.g., CSS variables/classes) used by TitleScreen/GameScene/HUD; do not change immutable files."
-        }
-      ]
-    },
-    {
-      "id": "REQ-41",
-      "summary": "Make in-game HUD touch-friendly on mobile: minimum tap targets, reduced crowding, and a mobile-friendly bottom action row layout with English labels.",
-      "acceptanceCriteria": [
-        "All interactive HUD controls have a minimum ~44px tap target (or equivalent Tailwind sizing) on small screens.",
-        "The bottom HUD actions (Sectors, Logistics, Finance, Settings) remain usable on mobile without overlapping and without requiring horizontal scrolling.",
-        "The top HUD (Funds, Reputation, Day, Pause/Play, Speed) remains readable and usable on mobile without covering critical screen area excessively."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/GameHUD.tsx",
-          "operation": "modify",
-          "description": "Increase mobile tap targets (e.g., min height/width ~44px), improve spacing, and convert the bottom action row into a responsive layout (wrap/grid and/or compact label treatment) that remains fully usable without horizontal scrolling; keep all labels in English. Use existing shadcn-ui Button/Sheet components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add/adjust any global utility classes (via Tailwind @layer if needed) to support consistent minimum tap target sizing and safe-area padding for HUD controls."
-        }
-      ]
-    },
-    {
-      "id": "REQ-42",
-      "summary": "Make the 2D game canvas responsive: size to its container/viewport, clamp devicePixelRatio for crispness, and avoid introducing horizontal scrolling.",
-      "acceptanceCriteria": [
-        "GameCanvas scales to fill the available game area on different screen sizes and orientations (portrait/landscape) without distortion or clipping.",
-        "Canvas rendering accounts for devicePixelRatio with a reasonable clamp (e.g., <=2) so text/lines are not blurry on retina devices while avoiding excessive resolution on mobile.",
-        "No horizontal page scrolling is introduced by the canvas on mobile."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/render/GameCanvas.tsx",
-          "operation": "modify",
-          "description": "Replace fixed 800x600 sizing with container-driven sizing (e.g., ResizeObserver), set canvas CSS size to fill available space, and set internal bitmap size using clamped devicePixelRatio for crisp rendering without excessive resolution on mobile."
-        },
-        {
-          "path": "frontend/src/game/GameScene.tsx",
-          "operation": "modify",
-          "description": "Introduce/adjust a dedicated canvas container region that defines the available game area for responsive sizing (while keeping HUD overlay), ensuring no horizontal overflow on mobile."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add any required global rules to prevent canvas-induced overflow (e.g., ensure canvas is block-level, max-width rules, and overflow-x hidden where appropriate without breaking scrollable panels)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-43",
-      "summary": "Improve mobile input handling for predictable touch interactions: prevent unintended page scroll/gesture on the canvas while keeping intended UI surfaces scrollable.",
-      "acceptanceCriteria": [
-        "Touch interactions on the game canvas do not cause the page to scroll or bounce the viewport unexpectedly.",
-        "Scrollable UI surfaces (e.g., the Sectors sheet content) continue to scroll normally on mobile.",
-        "No new browser console errors are introduced during touch interactions."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/render/GameCanvas.tsx",
-          "operation": "modify",
-          "description": "Apply canvas-specific touch handling (e.g., touch-action configuration and non-passive listeners where needed) to prevent page scrolling/overscroll while interacting with the canvas, without affecting scrollable UI panels/sheets."
-        },
-        {
-          "path": "frontend/src/game/GameScene.tsx",
-          "operation": "modify",
-          "description": "Ensure the game view container does not unintentionally swallow scrolling for overlays/sheets (canvas should block scroll only during direct canvas interaction; sheets/panels should remain scrollable)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "summary": "Optimize canvas rendering for mobile by removing unconditional interval redraws and using a requestAnimationFrame-driven and/or simulation-driven redraw strategy.",
-      "acceptanceCriteria": [
-        "GameCanvas no longer relies on an unconditional setInterval redraw if an animation frame approach or a simulation-driven redraw can reduce redundant work.",
-        "CPU usage is visibly reduced in devtools performance profiling on mobile emulation compared to a constant 10 FPS interval redraw, without breaking the displayed state updates.",
-        "Rendering continues to update smoothly during simulation changes (e.g., customer movement)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/render/GameCanvas.tsx",
-          "operation": "modify",
-          "description": "Remove the unconditional setInterval redraw; implement a requestAnimationFrame-based render scheduling strategy that renders on state changes and/or coalesces rapid updates to avoid redundant work while preserving current visuals."
+          "description": "Add error boundaries around HUD components. Include loading states for data that's fetched asynchronously. Add null checks for all game state properties before rendering. Ensure the HUD properly handles missing or incomplete data. Add logging for HUD update cycles and data changes."
         },
         {
           "path": "frontend/src/game/sim/useGameSimulation.ts",
           "operation": "modify",
-          "description": "If needed to support render coalescing, expose minimal simulation timing signals (e.g., tick counter already present) or stabilize state update cadence to work well with requestAnimationFrame rendering, without changing gameplay systems."
-        }
-      ]
-    },
-    {
-      "id": "REQ-45",
-      "summary": "Make the Sectors panel mobile-friendly: readable on small screens, responsive typography/wrapping, and horizontal scrolling limited to the table region when necessary (without harming desktop).",
-      "acceptanceCriteria": [
-        "On small screens, the SectorsPanel content does not overflow the viewport; long rows/columns remain accessible (e.g., via horizontal scrolling inside the table container).",
-        "Text remains legible on mobile and key sector stats are still visible without excessive truncation.",
-        "Desktop layout (>=1024px) is not degraded."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/features/sectors/SectorsPanel.tsx",
-          "operation": "modify",
-          "description": "Adjust panel layout for mobile: responsive heading typography, stats grid that stacks appropriately, and wrap the table in a dedicated horizontal-scroll container (only when needed) while keeping desktop layout intact. Use existing shadcn-ui Table/Card components. Verify the component's usage instructions before implementing."
+          "description": "Add error handling for game loop execution. Ensure the simulation doesn't start until initial state is properly loaded. Add guards to prevent state updates with invalid data. Include logging for simulation tick execution and state changes. Verify proper cleanup of intervals and timers when component unmounts or game stops."
         },
         {
-          "path": "frontend/src/game/GameHUD.tsx",
+          "path": "frontend/src/pages/TitleScreen.tsx",
           "operation": "modify",
-          "description": "Ensure the SheetContent that hosts SectorsPanel remains viewport-fit and scrollable on mobile (avoid nested overflow traps), keeping the panel usable one-handed. Use the existing shadcn-ui Sheet component. Verify the component's usage instructions before implementing."
+          "description": "Add error handling for the Start Game button click handler. Ensure proper state transitions when moving from title screen to game scene. Add logging for navigation events. Verify that authentication state is properly checked before allowing game start. Include user feedback for when prerequisites (authentication, profile) are not met."
         }
       ]
     }

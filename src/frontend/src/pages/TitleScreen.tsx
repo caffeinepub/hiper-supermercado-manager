@@ -3,12 +3,25 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import LoginButton from '../components/LoginButton';
 import AboutDialog from '../features/about/AboutDialog';
+import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { toast } from 'sonner';
 
 interface TitleScreenProps {
   onStartGame: () => void;
 }
 
 export default function TitleScreen({ onStartGame }: TitleScreenProps) {
+  const { identity } = useInternetIdentity();
+  const isAuthenticated = !!identity;
+
+  const handleStartGame = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login first to start the game');
+      return;
+    }
+    onStartGame();
+  };
+
   return (
     <div className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-gradient-to-br from-background via-accent/10 to-background safe-x safe-y px-4">
       <div className="absolute inset-0 bg-[url('/assets/generated/hsm-tileset.dim_2048x2048.png')] opacity-5 bg-repeat" />
@@ -25,9 +38,10 @@ export default function TitleScreen({ onStartGame }: TitleScreenProps) {
             <Button
               size="lg"
               className="w-full text-base sm:text-lg font-bold min-h-[44px]"
-              onClick={onStartGame}
+              onClick={handleStartGame}
+              disabled={!isAuthenticated}
             >
-              Start Game
+              {isAuthenticated ? 'Start Game' : 'Login to Start'}
             </Button>
             
             <LoginButton />
@@ -37,7 +51,7 @@ export default function TitleScreen({ onStartGame }: TitleScreenProps) {
         </Card>
 
         <div className="text-center text-xs sm:text-sm text-muted-foreground px-4">
-          <p>© ITA Games Studios – All rights reserved</p>
+          <p>© {new Date().getFullYear()} ITA Games Studios – All rights reserved</p>
         </div>
       </div>
     </div>

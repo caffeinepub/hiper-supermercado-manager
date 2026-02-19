@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useActor } from './hooks/useActor';
-import { useGetCallerUserProfile, useSaveCallerUserProfile, useCreateStore } from './hooks/useQueries';
+import { useGetCallerUserProfile } from './hooks/useQueries';
 import TitleScreen from './pages/TitleScreen';
 import GameScene from './game/GameScene';
 import ProfileSetupDialog from './components/ProfileSetupDialog';
 import { Toaster } from './components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export default function App() {
   const { identity, isInitializing } = useInternetIdentity();
@@ -22,6 +23,7 @@ export default function App() {
   const isAuthenticated = !!identity;
   const showProfileSetup = isAuthenticated && !profileLoading && profileFetched && userProfile === null;
 
+  // Show loading screen while initializing
   if (isInitializing || actorFetching) {
     return (
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
@@ -36,19 +38,25 @@ export default function App() {
     );
   }
 
+  // Show profile setup if needed
   if (showProfileSetup) {
     return (
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <ProfileSetupDialog />
+        <ErrorBoundary>
+          <ProfileSetupDialog />
+        </ErrorBoundary>
         <Toaster />
       </ThemeProvider>
     );
   }
 
+  // Show title screen or game
   if (!gameStarted) {
     return (
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <TitleScreen onStartGame={() => setGameStarted(true)} />
+        <ErrorBoundary>
+          <TitleScreen onStartGame={() => setGameStarted(true)} />
+        </ErrorBoundary>
         <Toaster />
       </ThemeProvider>
     );
@@ -56,7 +64,9 @@ export default function App() {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <GameScene />
+      <ErrorBoundary>
+        <GameScene />
+      </ErrorBoundary>
       <Toaster />
     </ThemeProvider>
   );

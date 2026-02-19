@@ -10,34 +10,6 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface Delivery {
-  'arrivalTime' : bigint,
-  'supplierName' : string,
-  'productId' : string,
-  'quantity' : bigint,
-}
-export interface Product {
-  'id' : string,
-  'name' : string,
-  'sector' : string,
-  'sellPrice' : number,
-  'shelfLife' : bigint,
-  'baseCost' : number,
-}
-export interface StockItem {
-  'purchasePrice' : number,
-  'sellingPrice' : number,
-  'productId' : string,
-  'expirationTime' : bigint,
-  'quantity' : bigint,
-}
-export interface StoreSectorSnapshot {
-  'name' : string,
-  'qualityLevel' : bigint,
-  'stock' : Array<StockItem>,
-  'staffAssigned' : bigint,
-  'cleanliness' : bigint,
-}
 export interface UserProfile {
   'name' : string,
   'createdAt' : bigint,
@@ -48,26 +20,15 @@ export type UserRole = { 'admin' : null } |
   { 'guest' : null };
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addProduct' : ActorMethod<
-    [string, string, number, number, string, bigint],
-    undefined
-  >,
-  'addSector' : ActorMethod<[string], undefined>,
-  'addSupplier' : ActorMethod<[string, number, bigint, bigint], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'createStore' : ActorMethod<[], undefined>,
+  'getAllUserProfiles' : ActorMethod<[], Array<[Principal, UserProfile]>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
-  'getFunds' : ActorMethod<[], number>,
-  'getPendingDeliveries' : ActorMethod<[], Array<Delivery>>,
-  'getReputation' : ActorMethod<[], number>,
-  'getSectors' : ActorMethod<[], Array<StoreSectorSnapshot>>,
-  'getStoreProducts' : ActorMethod<[], Array<Product>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
-  'orderStock' : ActorMethod<[string, bigint, string], undefined>,
-  'receiveDeliveries' : ActorMethod<[], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'testInitialization' : ActorMethod<[], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -1,461 +1,52 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 7,
-  "summary": "Build a complete, professional, playable browser-based (HTML5 + JavaScript) 2D top-down realistic tycoon/manager game named \"HIPER SUPERMERCADO MANAGER\" where the player grows from a small market into a full hypermarket, managing all operations (store layout, departments, customers AI, staff, inventory/logistics, finance, marketing, delivery, competition, progression, and premium currency simulation).",
+  "projectStateVersion": 3,
+  "summary": "Supermarket game with Facebook-style gameplay",
   "architectural_notes": [
-    "Target platform: browser game using HTML5 + JavaScript.",
-    "Game perspective/style: 2D top-down realistic tycoon/manager.",
-    "No real-money payments; design premium currency system as simulated but architecture ready for future payment/backend integration.",
-    "Project should be optimized, organized, and scalable; structured like a commercial-grade game.",
-    "Include autosave, professional UI, lightweight animations, ambient audio.",
-    "Plan for mobile web support: responsive UI scaling, touch-first input, and performance constraints for mobile browsers."
+    "Facebook-style casual game mechanics required"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Game failing to load/open - needs immediate fix"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-create-the-core-game-shell-for-hiper-supermercado-manager-with-a-2d-top-down-playable-simulation-loop-running-in-the-browser-start-pause-speed-controls-in-game-clock-calendar-days-and-a-deterministic-tick-update-system-that-drives-customers-employees-inventory-queues-finances-reputation-and-missions",
-      "title": "Create the core game shell for \"HIPER SUPERMERCADO MANAGER\" with a 2D top-down playable simulation loop running in the browser: start/pause/speed controls, in-game clock/calendar (days), and a deterministic tick/update system that drives customers, employees, inventory, queues, finances, reputation, and missions.",
+      "id": "feature-diagnose-and-fix-the-critical-error-preventing-the-game-from-loading-or-opening-in-the-browser",
+      "title": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-the-2d-top-down-map-and-environment-system-a-buildable-store-layout-with-entrance-exit-aisles-checkout-area-with-multiple-registers-and-distinct-zones-for-parking-internal-warehouse-admin-office-loading-unloading-bay-and-delivery-staging-area-the-store-area-must-be-expandable-as-progression-unlocks-space",
-      "title": "Implement the 2D top-down map and environment system: a buildable store layout with entrance/exit, aisles, checkout area with multiple registers, and distinct zones for parking, internal warehouse, admin office, loading/unloading bay, and delivery staging area. The store area must be expandable as progression unlocks space.",
+      "id": "feature-verify-that-the-store-initialization-flow-completes-successfully-without-errors",
+      "title": "Verify that the store initialization flow completes successfully without errors",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-customer-ai-with-the-required-customer-archetypes-economic-demanding-impulsive-loyal-and-wholesaler-customers-must-choose-where-what-to-buy-based-on-price-quality-cleanliness-and-queue-time-they-can-abandon-carts-and-rate-the-store-from-1-5-stars",
-      "title": "Implement customer AI with the required customer archetypes: Economic, Demanding, Impulsive, Loyal, and Wholesaler. Customers must choose where/what to buy based on price, quality, cleanliness, and queue time; they can abandon carts and rate the store from 1–5 stars.",
+      "id": "feature-ensure-the-gamescene-component-renders-properly-after-authentication-and-profile-setup",
+      "title": "Ensure the GameScene component renders properly after authentication and profile setup",
       "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-the-employee-system-with-the-required-roles-cashier-stocker-butcher-baker-warehouse-clerk-manager-cleaning-security-delivery-driver-include-salary-productivity-fatigue-training-absences-and-hire-fire-flows-staffing-must-affect-throughput-replenishment-speed-checkout-speed-order-picking-delivery-cleanliness",
-      "title": "Implement the employee system with the required roles: Cashier, Stocker, Butcher, Baker, Warehouse Clerk, Manager, Cleaning, Security, Delivery Driver. Include salary, productivity, fatigue, training, absences, and hire/fire flows. Staffing must affect throughput (replenishment speed, checkout speed, order picking/delivery, cleanliness).",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-a-professional-clear-ui-ux-suitable-for-a-commercial-tycoon-manager-game-dashboard-cash-reputation-date-build-mode-department-management-inventory-suppliers-staffing-marketing-online-orders-reports-analytics-missions-and-settings-all-ui-text-must-be-in-english",
-      "title": "Create a professional, clear UI/UX suitable for a commercial tycoon/manager game: dashboard (cash, reputation, date), build mode, department management, inventory & suppliers, staffing, marketing, online orders, reports/analytics, missions, and settings. All UI text must be in English.",
-      "reqIds": [
-        "REQ-18"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-cohesive-distinctive-visual-theme-for-the-entire-ui-and-game-presentation-colors-typography-layout-icon-style-suitable-for-a-realistic-top-down-supermarket-tycoon-keep-it-consistent-across-all-screens-and-avoid-default-template-styling",
-      "title": "Add a cohesive, distinctive visual theme for the entire UI and game presentation (colors, typography, layout, icon style) suitable for a realistic top-down supermarket tycoon. Keep it consistent across all screens and avoid default template styling.",
-      "reqIds": [
-        "REQ-21"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-branding-show-the-title-hiper-supermercado-manager-and-the-copyright-notice-ita-games-studios-all-rights-reserved-on-the-title-screen-and-in-an-in-game-credits-about-panel",
-      "title": "Add branding: show the title \"HIPER SUPERMERCADO MANAGER\" and the copyright notice \"© ITA Games Studios – All rights reserved\" on the title screen and in an in-game credits/about panel.",
-      "reqIds": [
-        "REQ-22"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-all-supermarket-departments-sectors-listed-by-the-user-and-make-them-first-class-gameplay-systems-each-sector-must-have-its-own-stock-demand-model-staffing-needs-profitability-metrics-and-a-sector-quality-level-that-influences-customer-purchasing-decisions-and-reviews",
-      "title": "Implement all supermarket departments/sectors listed by the user and make them first-class gameplay systems. Each sector must have its own stock, demand model, staffing needs, profitability metrics, and a sector quality level that influences customer purchasing decisions and reviews.",
-      "reqIds": [
-        "REQ-23"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-agent-pathfinding-and-movement-on-the-2d-top-down-map-for-customers-and-employees-including-impassable-tiles-collision-avoidance-at-minimum-grid-blocking-and-queue-formation-at-checkout-registers-support-customer-travel-flow-parking-entrance-selected-sectors-checkout-exit",
-      "title": "Add agent pathfinding and movement on the 2D top-down map for customers and employees, including impassable tiles, collision avoidance (at minimum grid blocking), and queue formation at checkout registers. Support customer travel flow: parking → entrance → selected sectors → checkout → exit.",
-      "reqIds": [
-        "REQ-26"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-a-cleanliness-system-cleanliness-decays-over-time-based-on-customer-traffic-and-operational-load-cleaning-staff-restore-cleanliness-cleanliness-must-affect-customer-purchase-decisions-and-store-reputation",
-      "title": "Implement a cleanliness system: cleanliness decays over time based on customer traffic and operational load; cleaning staff restore cleanliness. Cleanliness must affect customer purchase decisions and store reputation.",
-      "reqIds": [
-        "REQ-28"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-reputation-marketing-a-store-reputation-score-driven-by-customer-reviews-and-operational-kpis-plus-marketing-campaigns-flyers-radio-social-media-tv-with-costs-durations-and-measurable-impacts-on-customer-flow",
-      "title": "Implement reputation & marketing: a store reputation score driven by customer reviews and operational KPIs, plus marketing campaigns (Flyers, Radio, Social Media, TV) with costs, durations, and measurable impacts on customer flow.",
-      "reqIds": [
-        "REQ-30"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-simulated-premium-currency-and-a-premium-shop-selling-equipment-automation-upgrade-items-purchasable-only-with-premium-currency-the-system-must-be-explicitly-non-monetized-now-but-structured-so-a-future-real-payment-integration-could-replace-only-the-currency-top-up-source",
-      "title": "Implement simulated premium currency and a premium shop selling equipment/automation/upgrade items purchasable only with premium currency. The system must be explicitly non-monetized now, but structured so a future real-payment integration could replace only the currency top-up source.",
-      "reqIds": [
-        "REQ-34"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-implement-autosave-and-persistent-game-state-storage-using-the-motoko-backend-including-manual-save-load-slots-and-periodic-automatic-saves-persist-at-minimum-map-layout-sector-unlocks-inventories-employees-finances-missions-reputation-progression-and-online-orders-deliveries",
-      "title": "Implement autosave and persistent game state storage using the Motoko backend, including manual save/load slots and periodic automatic saves. Persist at minimum: map/layout, sector unlocks, inventories, employees, finances, missions, reputation, progression, and online orders/deliveries.",
-      "reqIds": [
-        "REQ-35"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-lightweight-2d-animations-and-ambient-sound-effects-toggleable-for-customer-movement-register-activity-delivery-arrivals-subtle-ui-transitions-and-looping-store-ambience-provide-volume-controls-and-the-ability-to-disable-audio-for-performance-accessibility",
-      "title": "Add lightweight 2D animations and ambient sound effects (toggleable) for: customer movement, register activity, delivery arrivals, subtle UI transitions, and looping store ambience. Provide volume controls and the ability to disable audio for performance/accessibility.",
-      "reqIds": [
-        "REQ-36"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-performance-and-scalability-features-rendering-optimizations-suitable-for-large-maps-and-many-agents-structured-code-organization-for-simulation-vs-rendering-and-a-debug-profiling-overlay-showing-fps-tick-time-active-agent-count-and-queue-lengths",
-      "title": "Add performance and scalability features: rendering optimizations suitable for large maps and many agents, structured code organization for simulation vs rendering, and a debug/profiling overlay showing FPS, tick time, active agent count, and queue lengths.",
-      "reqIds": [
-        "REQ-37"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-branding-is-applied-consistently-in-all-relevant-screens-show-the-title-hiper-supermercado-manager-and-the-copyright-notice-ita-games-studios-all-rights-reserved-on-the-title-screen-and-in-an-in-game-credits-about-panel-with-all-other-ui-text-in-english",
-      "title": "Ensure branding is applied consistently in all relevant screens: show the title \"HIPER SUPERMERCADO MANAGER\" and the copyright notice \"© ITA Games Studios – All rights reserved\" on the title screen and in an in-game credits/about panel, with all other UI text in English.",
-      "reqIds": [
-        "REQ-38"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-generated-static-image-assets-for-a-cohesive-realistic-2d-top-down-supermarket-tycoon-presentation-logo-title-art-and-a-small-tile-sprite-set-and-render-them-from-frontend-public-assets-generated-do-not-serve-images-via-the-backend",
-      "title": "Add generated static image assets for a cohesive, realistic 2D top-down supermarket tycoon presentation (logo/title art and a small tile/sprite set) and render them from frontend/public/assets/generated (do not serve images via the backend).",
-      "reqIds": [
-        "REQ-39"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-app-layout-fully-responsive-on-mobile-320px-width-and-up-for-the-title-screen-profile-setup-flow-store-initializer-flow-and-in-game-hud-ensuring-no-ui-is-clipped-off-screen-and-primary-actions-remain-reachable-with-one-hand",
-      "title": "Make the app layout fully responsive on mobile (320px width and up) for the Title Screen, Profile Setup flow, Store Initializer flow, and in-game HUD, ensuring no UI is clipped off-screen and primary actions remain reachable with one hand.",
-      "reqIds": [
-        "REQ-40"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-in-game-hud-to-be-touch-friendly-on-mobile-by-increasing-tap-target-sizes-preventing-control-crowding-and-adapting-the-bottom-action-row-into-a-mobile-friendly-layout-e-g-wrapping-compact-labels-or-a-more-mobile-appropriate-arrangement-while-keeping-all-user-facing-text-in-english",
-      "title": "Update the in-game HUD to be touch-friendly on mobile by increasing tap target sizes, preventing control crowding, and adapting the bottom action row into a mobile-friendly layout (e.g., wrapping, compact labels, or a more mobile-appropriate arrangement) while keeping all user-facing text in English.",
-      "reqIds": [
-        "REQ-41"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-game-canvas-responsive-and-mobile-performant-by-sizing-it-to-the-available-viewport-container-instead-of-a-fixed-800x600-and-render-at-an-appropriate-devicepixelratio-clamped-to-keep-visuals-crisp-without-overloading-mobile-gpus",
-      "title": "Make the game canvas responsive and mobile-performant by sizing it to the available viewport/container instead of a fixed 800x600, and render at an appropriate devicePixelRatio (clamped) to keep visuals crisp without overloading mobile GPUs.",
-      "reqIds": [
-        "REQ-42"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-improve-mobile-input-handling-in-the-game-view-to-avoid-accidental-browser-gestures-and-provide-predictable-touch-interactions-for-gameplay-viewing-at-minimum-prevent-unwanted-page-scroll-while-interacting-with-the-game-canvas-ensure-ui-remains-scrollable-where-intended-such-as-sheets-panels",
-      "title": "Improve mobile input handling in the game view to avoid accidental browser gestures and provide predictable touch interactions for gameplay viewing (at minimum: prevent unwanted page scroll while interacting with the game canvas; ensure UI remains scrollable where intended such as sheets/panels).",
-      "reqIds": [
-        "REQ-43"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-optimize-the-canvas-render-loop-for-mobile-browsers-by-avoiding-unnecessary-fixed-interval-redraws-and-reducing-rerender-frequency-when-possible-while-preserving-the-current-visual-behavior",
-      "title": "Optimize the canvas render loop for mobile browsers by avoiding unnecessary fixed-interval redraws and reducing rerender frequency when possible, while preserving the current visual behavior.",
-      "reqIds": [
-        "REQ-44"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-make-the-sectors-panel-content-mobile-friendly-by-ensuring-tables-cards-are-readable-on-small-screens-e-g-responsive-typography-wrapping-and-allowing-horizontal-scroll-for-the-table-region-if-needed-without-breaking-desktop-layout",
-      "title": "Make the Sectors panel content mobile-friendly by ensuring tables/cards are readable on small screens (e.g., responsive typography, wrapping, and allowing horizontal scroll for the table region if needed) without breaking desktop layout.",
-      "reqIds": [
-        "REQ-45"
+        "REQ-3"
       ],
       "version": 1
     }
   ],
   "new_feature_requests": [
     {
-      "id": "AR-1",
-      "summary": "Core 2D top-down supermarket map & environment (store layout with aisles/entrance/exit/cashiers, expandable area, parking, warehouse, office, loading/unloading, delivery area, branches)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "All supermarket departments/sectors with per-sector inventory, demand, profit, staffing and quality (hortifruti, butcher, fish, bakery, dairy, grocery, drinks, frozen, cleaning, hygiene, pet, electronics, home goods, bazaar, pharmacy, organics, wholesale)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Realistic customer AI with customer types, decision factors (price/quality/cleanliness/queue time), cart abandonment, and 1–5 star store ratings",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
       "id": "AR-4",
-      "summary": "Employee system (roles, salaries, productivity, fatigue, training, absences, hiring/firing) including cashier, stocker, specialists, manager, cleaning, security, delivery driver",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Real-time inventory & logistics (expiration dates/spoilage losses, multiple suppliers with variable price/lead time/quality, delivery trucks, stockouts affecting reputation)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Economy & finance systems (daily cashflow, profit/loss, fixed costs, per-product pricing, promotions, seasonal dates/events)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Reputation & marketing system (reputation score tied to reviews; marketing channels with cost/impact on customer flow)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Online shopping & delivery (order picking from inventory, home delivery with vehicles, delays impacting reputation)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Expansion & competition (expand store/open sectors/build chain of hypermarkets; AI competitors that adjust prices/marketing)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Missions, progression, achievements and ranking",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-11",
-      "summary": "Simulated premium currency and premium shop (equipment/automation/upgrades) prepared for future payment integration without real payments now",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Technical foundations: autosave, professional UI, 2D realistic graphics, light animations, ambient sounds, performance optimization, scalable codebase, backend-ready structure",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-15",
-      "summary": "Add pathfinding and movement for agents (customers, employees, delivery/picking staff) on the 2D map, including collision/impassable tiles, queues at checkouts, and travel between parking → entrance → departments → checkout → exit.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-16",
-      "summary": "Implement ALL supermarket departments/sectors listed by the user. Each sector must have: its own inventory, demand model, pricing, profitability, staffing requirements, and a quality level that affects customer decisions and reviews.",
+      "summary": "Fix any backend actor initialization or authentication issues that may prevent game data from loading",
       "reqIds": [
         "REQ-4"
       ],
       "status": "pending"
-    },
-    {
-      "id": "AR-17",
-      "summary": "Create a product catalog system with per-product: base cost, sell price (player-adjustable), supplier options, shelf/sector assignment, unit demand drivers, and expiration/validity (where applicable). Products must expire and generate losses when spoiled.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-18",
-      "summary": "Implement real-time inventory & logistics: ordering from multiple suppliers (with variable price, lead time, and quality), inbound deliveries (trucks), receiving into warehouse, replenishment to shelves by employees, and stockouts affecting reputation and sales.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-20",
-      "summary": "Add a cleanliness system: store cleanliness decays over time with customer traffic and operational load; cleaning staff restore it. Cleanliness must affect customer decisions and reputation.",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-22",
-      "summary": "Build checkout operations: multiple cash registers, assign cashiers, per-customer basket scanning time, queueing behavior, and lost sales due to long lines. Provide UI to open/close registers and view per-register metrics.",
-      "reqIds": [
-        "REQ-10"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-23",
-      "summary": "Implement economy & finance: daily cashflow, profit/loss, fixed costs (energy, water, rent, taxes, salaries), per-product pricing, promotions, and seasonal events (Christmas, Easter, Black Friday) that affect demand and pricing strategy.",
-      "reqIds": [
-        "REQ-11"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-24",
-      "summary": "Implement reputation & marketing: a store reputation score driven by customer reviews and operational KPIs, plus marketing campaigns (Flyers, Radio, Social Media, TV) with costs and impacts on customer flow.",
-      "reqIds": [
-        "REQ-12"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-25",
-      "summary": "Implement online shopping & delivery: customers can place online orders; orders reserve/pick items from inventory, stage them in a delivery area, and dispatch via drivers (motorbike and truck tiers). Delivery delays and failed fulfillment must impact reputation.",
-      "reqIds": [
-        "REQ-13"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-26",
-      "summary": "Implement expansion & progression: unlocking new sectors, expanding floor space, upgrading capabilities, and enabling 'branch stores' (multiple locations) with separate P&L and shared corporate overview. Include AI competitors that adjust prices/marketing and influence market demand.",
-      "reqIds": [
-        "REQ-14"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-27",
-      "summary": "Add missions, progression rewards, achievements, and ranking: main and side missions (revenue targets, sector openings, max reputation), achievements tracking, and a ranking/leaderboard view (local/in-canister, no third-party services).",
-      "reqIds": [
-        "REQ-15"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-28",
-      "summary": "Implement simulated premium currency and a premium shop that sells cosmetic/automation/upgrade items using premium currency only. The system must be explicitly non-monetized now, but structured so a future payment integration could replace the currency top-up source.",
-      "reqIds": [
-        "REQ-16"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-29",
-      "summary": "Implement autosave and persistent game state storage using the Motoko backend, including manual save/load slots and automatic periodic saves. Ensure state includes map/layout, inventories, employees, finances, missions, reputation, and progression.",
-      "reqIds": [
-        "REQ-17"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-31",
-      "summary": "Add lightweight 2D animations and ambient sound effects (toggleable): customer movement, register activity, delivery arrivals, subtle UI transitions, and looping store ambience. Provide volume controls and the ability to disable audio for performance/accessibility.",
-      "reqIds": [
-        "REQ-19"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-32",
-      "summary": "Performance and scalability: implement rendering optimizations for large maps and many agents (e.g., culling/virtualization strategies appropriate for the chosen 2D renderer), structured code organization, and simulation profiling/debug overlays for FPS/tick time/agent count.",
-      "reqIds": [
-        "REQ-20"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-34",
-      "summary": "Create a product catalog system with per-product attributes: base cost, player-adjustable sell price, sector assignment, supplier options, demand drivers, and expiration/validity when applicable. Products must be able to spoil/expire and generate losses when unsold past validity.",
-      "reqIds": [
-        "REQ-24"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-35",
-      "summary": "Implement real-time inventory & logistics: ordering from multiple suppliers (variable price, lead time, quality), inbound deliveries (trucks), receiving into warehouse, replenishment to shelves by employees, and stockouts affecting sales and reputation.",
-      "reqIds": [
-        "REQ-25"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-37",
-      "summary": "Build checkout operations: multiple registers, assign cashiers, per-customer scanning/checkout time, queue-time-driven abandonment, and lost sales due to long lines. Provide UI controls to open/close registers and view per-register throughput metrics.",
-      "reqIds": [
-        "REQ-27"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-39",
-      "summary": "Implement economy & finance systems: daily cashflow, profit/loss, fixed operating costs (energy, water, rent, taxes, salaries), promotions, and seasonal events (Christmas, Easter, Black Friday) that modify demand and/or pricing effectiveness.",
-      "reqIds": [
-        "REQ-29"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-41",
-      "summary": "Implement online shopping & delivery: online orders reserve items from inventory, generate pick/pack tasks, stage orders in the delivery area, and dispatch via drivers with vehicle tiers (motorbike and truck). Delays and failed fulfillment must negatively impact reputation.",
-      "reqIds": [
-        "REQ-31"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-42",
-      "summary": "Implement expansion & progression: unlock new sectors, expand store floor space, and enable branch stores (multiple locations) with separate P&L and a corporate overview. Add AI competitors that adjust prices/marketing and influence market demand.",
-      "reqIds": [
-        "REQ-32"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-43",
-      "summary": "Add missions and progression rewards: main and side missions (revenue targets, sector openings, reach max reputation), achievements tracking, and a ranking/leaderboard view stored locally/in-canister (no third-party services).",
-      "reqIds": [
-        "REQ-33"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-44",
-      "summary": "Mobile optimization: responsive UI/layout for touch, scalable resolution, input handling for mobile devices, and performance optimizations for mobile browsers",
-      "reqIds": [],
-      "status": "pending"
     }
   ],
   "gameProjectType": "2d",
-  "projectName": "HIPER SUPERMERCADO MANAGER",
+  "projectName": "Supermarket Tycoon",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

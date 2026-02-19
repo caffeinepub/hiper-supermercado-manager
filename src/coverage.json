@@ -1,119 +1,86 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T07:08:43.392Z",
+  "generatedAt": "2026-02-19T21:40:19.296Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 6,
+    "total": 4,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-40",
-        "summary": "Make the app layout fully responsive on mobile (320px width and up) for the Title Screen, Profile Setup flow, Store Initializer flow, and in-game HUD, ensuring no UI is clipped off-screen and primary actions remain reachable with one hand.",
+        "id": "REQ-1",
+        "summary": "Diagnose and fix the critical error preventing the game from loading or opening in the browser",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/TitleScreen.tsx",
-          "frontend/src/components/ProfileSetupDialog.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/hooks/useActor.ts",
+          "frontend/src/main.tsx",
+          "frontend/src/components/ErrorBoundary.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/ErrorBoundary.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Verify that the store initialization flow completes successfully without errors",
+        "status": "implemented",
+        "plannedFiles": [
           "frontend/src/components/StoreInitializer.tsx",
-          "frontend/src/game/GameHUD.tsx",
-          "frontend/src/game/GameScene.tsx",
-          "frontend/src/index.css"
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/TitleScreen.tsx",
-          "frontend/src/components/ProfileSetupDialog.tsx",
           "frontend/src/components/StoreInitializer.tsx",
-          "frontend/src/game/GameHUD.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the GameScene component renders properly after authentication and profile setup",
+        "status": "implemented",
+        "plannedFiles": [
           "frontend/src/game/GameScene.tsx",
-          "frontend/src/index.css"
-        ]
-      },
-      {
-        "id": "REQ-41",
-        "summary": "Update the in-game HUD to be touch-friendly on mobile by increasing tap target sizes, preventing control crowding, and adapting the bottom action row into a mobile-friendly layout (e.g., wrapping, compact labels, or a more mobile-appropriate arrangement) while keeping all user-facing text in English.",
-        "status": "implemented",
-        "plannedFiles": [
+          "frontend/src/game/render/GameCanvas.tsx",
           "frontend/src/game/GameHUD.tsx",
-          "frontend/src/index.css"
+          "frontend/src/game/sim/useGameSimulation.ts",
+          "frontend/src/pages/TitleScreen.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/game/GameHUD.tsx",
-          "frontend/src/index.css"
-        ]
-      },
-      {
-        "id": "REQ-42",
-        "summary": "Make the game canvas responsive and mobile-performant by sizing it to the available viewport/container instead of a fixed 800x600, and render at an appropriate devicePixelRatio (clamped) to keep visuals crisp without overloading mobile GPUs.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/game/render/GameCanvas.tsx",
           "frontend/src/game/GameScene.tsx",
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
-          "frontend/src/game/render/GameCanvas.tsx",
-          "frontend/src/game/GameScene.tsx",
-          "frontend/src/index.css"
+          "frontend/src/pages/TitleScreen.tsx"
         ]
       },
       {
-        "id": "REQ-43",
-        "summary": "Improve mobile input handling in the game view to avoid accidental browser gestures and provide predictable touch interactions for gameplay viewing (at minimum: prevent unwanted page scroll while interacting with the game canvas; ensure UI remains scrollable where intended such as sheets/panels).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/game/render/GameCanvas.tsx",
-          "frontend/src/game/GameScene.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/game/render/GameCanvas.tsx",
-          "frontend/src/game/GameScene.tsx"
-        ]
-      },
-      {
-        "id": "REQ-44",
-        "summary": "Optimize the canvas render loop for mobile browsers by avoiding unnecessary fixed-interval redraws and reducing rerender frequency when possible, while preserving the current visual behavior.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/game/render/GameCanvas.tsx",
-          "frontend/src/game/sim/useGameSimulation.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/game/render/GameCanvas.tsx"
-        ]
-      },
-      {
-        "id": "REQ-45",
-        "summary": "Make the Sectors panel content mobile-friendly by ensuring tables/cards are readable on small screens (e.g., responsive typography, wrapping, and allowing horizontal scroll for the table region if needed) without breaking desktop layout.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/features/sectors/SectorsPanel.tsx",
-          "frontend/src/game/GameHUD.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/features/sectors/SectorsPanel.tsx",
-          "frontend/src/game/GameHUD.tsx"
-        ]
+        "id": "REQ-4",
+        "summary": "Fix any backend actor initialization or authentication issues that may prevent game data from loading",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
-    "build-template/README.md",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/ProfileSetupDialog.tsx",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/ErrorBoundary.tsx",
     "frontend/src/components/StoreInitializer.tsx",
-    "frontend/src/features/sectors/SectorsPanel.tsx",
-    "frontend/src/game/GameHUD.tsx",
+    "frontend/src/config.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
     "frontend/src/game/GameScene.tsx",
-    "frontend/src/game/render/GameCanvas.tsx",
-    "frontend/src/index.css",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/pages/TitleScreen.tsx",
-    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
